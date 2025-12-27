@@ -9,7 +9,7 @@ import Foundation
 import Testing
 
 enum HTTPClientResult {
-    case success(HTTPURLResponse)
+    case success(Data, HTTPURLResponse)
     case failure(Error)
 }
 
@@ -94,6 +94,21 @@ struct RemoteFeedLoaderTests {
         }
     }
     
+    @Test func load_deliversErrorOn2xxHTTPResponseWithInvalidJSON() {
+        let (sut, client) = makeSUT()
+        let samples = [200, 201, 250, 298, 299]
+        
+        samples.enumerated().forEach { index, code in
+            var capturedErrors = [RemoteFeedLoader.Error]()
+            sut.load { capturedErrors.append($0) }
+            
+            let invalidJSON = Data("invalid json".utf8)
+            client.complete(withStatusCode: code, data: invalidJSON, at: index)
+            
+            #expect(capturedErrors == [.invalidData])
+        }
+    }
+    
     // MARK: - Helpers
     
     private func makeSUT(url: URL = URL(string: "https://anyURL.com")!) -> (sut: RemoteFeedLoader, client: HTTPClientSpy) {
@@ -118,7 +133,7 @@ struct RemoteFeedLoaderTests {
             messages[index].completion(.failure(error))
         }
         
-        func complete(withStatusCode code: Int, at index: Int) {
+        func complete(withStatusCode code: Int, data: Data = Data(), at index: Int) {
             let response = HTTPURLResponse(
                 url: requestedURLs[index],
                 statusCode: code,
@@ -126,7 +141,7 @@ struct RemoteFeedLoaderTests {
                 headerFields: nil
             )!
             
-            messages[index].completion(.success(response))
+            messages[index].completion(.success(data, response))
         }
     }
 }

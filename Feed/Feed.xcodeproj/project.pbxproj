@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1BBBF8712F005FF600BA192C /* Feed.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1BBBF85F2F005F5B00BA192C /* Feed.framework */; platformFilter = ios; };
+		1BBBF8712F005FF600BA192C /* Feed.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1BBBF85F2F005F5B00BA192C /* Feed.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -209,7 +209,6 @@
 /* Begin PBXTargetDependency section */
 		1BBBF8732F005FF600BA192C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			platformFilter = ios;
 			target = 1BBBF85E2F005F5B00BA192C /* Feed */;
 			targetProxy = 1BBBF8722F005FF600BA192C /* PBXContainerItemProxy */;
 		};

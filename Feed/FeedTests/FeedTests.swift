@@ -7,41 +7,7 @@
 
 import Foundation
 import Testing
-
-enum HTTPClientResult {
-    case success(Data, HTTPURLResponse)
-    case failure(Error)
-}
-
-class RemoteFeedLoader {
-    private let client: HTTPClient
-    private let url: URL
-    
-    enum Error: Swift.Error {
-        case connectivity
-        case invalidData
-    }
-    
-    init(url: URL, client: HTTPClient) {
-        self.url = url
-        self.client = client
-    }
-    
-    func load(completion: @escaping (Error) -> Void) {
-        client.get(from: url) { result in
-            switch result {
-            case .success:
-                completion(.invalidData)
-            case .failure:
-                completion(.connectivity)
-            }
-        }
-    }
-}
-
-protocol HTTPClient {
-    func get(from url: URL, completion: @escaping (HTTPClientResult) -> Void)
-}
+import Feed
 
 struct RemoteFeedLoaderTests {
     @Test func init_doesNotRequestDataFromURL() {

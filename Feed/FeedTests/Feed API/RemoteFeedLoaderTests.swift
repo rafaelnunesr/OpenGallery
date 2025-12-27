@@ -38,46 +38,45 @@ struct RemoteFeedLoaderTests {
     @Test func load_deliversErrorOnClientError() {
         let (sut, client) = makeSUT()
         
-        let capturedErrors = capturedErrors(sut, completeWithError: .connectivity) {
+        let capturedResults = capturedResults(sut, completeWith: .failure(.connectivity)) {
             let clientError = NSError(domain: "Test", code: 0)
             client.complete(with: clientError)
         }
         
-        #expect(capturedErrors == [.failure(.connectivity)])
+        #expect(capturedResults == [.failure(.connectivity)])
     }
     
     @Test(arguments: [198, 199, 300, 301, 400, 500])
     func load_deliversErrorOnNon2xxHTTPResponse(statusCode: Int) {
         let (sut, client) = makeSUT()
         
-        let capturedErrors = capturedErrors(sut, completeWithError: .invalidData) {
+        let capturedResults = capturedResults(sut, completeWith: .failure(.invalidData)) {
             client.complete(withStatusCode: statusCode)
         }
         
-        #expect(capturedErrors == [.failure(.invalidData)])
+        #expect(capturedResults == [.failure(.invalidData)])
     }
     
     @Test(arguments: [200, 201, 250, 298, 299])
     func load_deliversErrorOn2xxHTTPResponseWithInvalidJSON(statusCode: Int) {
         let (sut, client) = makeSUT()
         
-        let capturedErrors = capturedErrors(sut, completeWithError: .invalidData) {
+        let capturedResults = capturedResults(sut, completeWith: .failure(.invalidData)) {
             let invalidJSON = Data("invalid json".utf8)
             client.complete(withStatusCode: statusCode, data: invalidJSON)
         }
         
-        #expect(capturedErrors == [.failure(.invalidData)])
+        #expect(capturedResults == [.failure(.invalidData)])
     }
     
     @Test(arguments: [200, 201, 250, 298, 299])
     func load_deliversNoItemsOn2xxHTTPResponseWithEmptyJSONList(statusCode: Int) {
         let (sut, client) = makeSUT()
         
-        var capturedResults = [RemoteFeedLoader.Result]()
-        sut.load { capturedResults.append($0) }
-        
-        let emptyListJSON = Data("{\"data\": []}".utf8)
-        client.complete(withStatusCode: statusCode, data: emptyListJSON)
+        let capturedResults = capturedResults(sut, completeWith: .success([])) {
+            let emptyListJSON = Data("{\"data\": []}".utf8)
+            client.complete(withStatusCode: statusCode, data: emptyListJSON)
+        }
         
         #expect(capturedResults == [.success([])])
     }
@@ -91,7 +90,7 @@ struct RemoteFeedLoaderTests {
         return (sut, client)
     }
     
-    private func capturedErrors(_ sut: RemoteFeedLoader, completeWithError: RemoteFeedLoader.Error, when action: () -> Void) -> [RemoteFeedLoader.Result] {
+    private func capturedResults(_ sut: RemoteFeedLoader, completeWith result: RemoteFeedLoader.Result, when action: () -> Void) -> [RemoteFeedLoader.Result] {
         var capturedResults = [RemoteFeedLoader.Result]()
         sut.load { capturedResults.append($0) }
         action()

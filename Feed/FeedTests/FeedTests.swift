@@ -30,7 +30,7 @@ struct RemoteFeedLoaderTests {
     @Test func init_doesNotRequestDataFromURL() {
         let client = makeSUT().client
         
-        #expect(client.requestedURL == nil)
+        #expect(client.requestedURLs.isEmpty)
     }
     
     @Test func load_requestsDataFromURL() {
@@ -39,7 +39,7 @@ struct RemoteFeedLoaderTests {
         
         sut.load()
         
-        #expect(client.requestedURL == url)
+        #expect(client.requestedURLs == [url])
     }
     
     @Test func loadTwice_requestsDataFromURLTwice() {
@@ -62,11 +62,9 @@ struct RemoteFeedLoaderTests {
     }
     
     private class HTTPClientSpy: HTTPClient {
-        var requestedURL: URL?
         var requestedURLs = [URL]()
         
         func get(from url: URL) {
-            requestedURL = url
             requestedURLs.append(url)
         }
     }

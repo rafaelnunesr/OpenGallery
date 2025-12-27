@@ -69,6 +69,19 @@ struct RemoteFeedLoaderTests {
         #expect(capturedErrors == [.failure(.invalidData)])
     }
     
+    @Test(arguments: [200, 201, 250, 298, 299])
+    func load_deliversNoItemsOn2xxHTTPResponseWithEmptyJSONList(statusCode: Int) {
+        let (sut, client) = makeSUT()
+        
+        var capturedResults = [RemoteFeedLoader.Result]()
+        sut.load { capturedResults.append($0) }
+        
+        let emptyListJSON = Data("{\"data\": []}".utf8)
+        client.complete(withStatusCode: statusCode, data: emptyListJSON)
+        
+        #expect(capturedResults == [.success([])])
+    }
+    
     // MARK: - Helpers
     
     private func makeSUT(url: URL = URL(string: "https://anyURL.com")!) -> (sut: RemoteFeedLoader, client: HTTPClientSpy) {

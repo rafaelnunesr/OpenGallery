@@ -18,12 +18,12 @@ class RemoteFeedLoader {
     }
     
     func load() {
-        client.requestedURL = url
+        client.get(from: url)
     }
 }
 
-class HTTPClient {
-    var requestedURL: URL?
+protocol HTTPClient {
+    func get(from url: URL)
 }
 
 struct RemoteFeedLoaderTests {
@@ -44,10 +44,19 @@ struct RemoteFeedLoaderTests {
     
     // MARK: - Helpers
     
-    private func makeSUT(url: URL = URL(string: "https://anyURL.com")!) -> (sut: RemoteFeedLoader, client: HTTPClient) {
-        let client = HTTPClient()
+    private func makeSUT(url: URL = URL(string: "https://anyURL.com")!) -> (sut: RemoteFeedLoader, client: HTTPClientSpy) {
+        let client = HTTPClientSpy()
         let sut = RemoteFeedLoader(url: url, client: client)
         
         return (sut, client)
+    }
+    
+    private class HTTPClientSpy: HTTPClient {
+        var requestedURL: URL?
+        
+        func get(from url: URL) {
+            requestedURL = url
+        }
+        
     }
 }

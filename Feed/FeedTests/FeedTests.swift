@@ -28,20 +28,26 @@ class HTTPClient {
 
 struct RemoteFeedLoaderTests {
     @Test func init_doesNotRequestDataFromURL() {
-        let url = URL(string: "https://anyURL.com")!
-        let client = HTTPClient()
-        _ = RemoteFeedLoader(url: url, client: client)
+        let client = makeSUT().client
         
         #expect(client.requestedURL == nil)
     }
     
     @Test func load_requestDataFromURL() {
         let url = URL(string: "https://anyURL.com")!
-        let client = HTTPClient()
-        let sut = RemoteFeedLoader(url: url, client: client)
+        let (sut, client) = makeSUT(url: url)
         
         sut.load()
         
         #expect(client.requestedURL == url)
+    }
+    
+    // MARK: - Helpers
+    
+    private func makeSUT(url: URL = URL(string: "https://anyURL.com")!) -> (sut: RemoteFeedLoader, client: HTTPClient) {
+        let client = HTTPClient()
+        let sut = RemoteFeedLoader(url: url, client: client)
+        
+        return (sut, client)
     }
 }

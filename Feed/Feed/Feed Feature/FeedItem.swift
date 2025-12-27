@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct FeedItem {
+public struct FeedItem: Equatable {
     let id: Int
     let title: String
     let dateStart: Date
@@ -20,7 +20,7 @@ struct FeedItem {
     let imageID: String?
 }
 
-struct DimensionsDetails {
+public struct DimensionsDetails: Equatable {
     let depth: Double?
     let width: Double?
     let height: Double?

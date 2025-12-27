@@ -43,7 +43,7 @@ struct RemoteFeedLoaderTests {
             client.complete(with: clientError)
         }
         
-        #expect(capturedErrors == [.connectivity])
+        #expect(capturedErrors == [.failure(.connectivity)])
     }
     
     @Test(arguments: [198, 199, 300, 301, 400, 500])
@@ -54,7 +54,7 @@ struct RemoteFeedLoaderTests {
             client.complete(withStatusCode: statusCode)
         }
         
-        #expect(capturedErrors == [.invalidData])
+        #expect(capturedErrors == [.failure(.invalidData)])
     }
     
     @Test(arguments: [200, 201, 250, 298, 299])
@@ -66,7 +66,7 @@ struct RemoteFeedLoaderTests {
             client.complete(withStatusCode: statusCode, data: invalidJSON)
         }
         
-        #expect(capturedErrors == [.invalidData])
+        #expect(capturedErrors == [.failure(.invalidData)])
     }
     
     // MARK: - Helpers
@@ -78,12 +78,12 @@ struct RemoteFeedLoaderTests {
         return (sut, client)
     }
     
-    private func capturedErrors(_ sut: RemoteFeedLoader, completeWithError: RemoteFeedLoader.Error, when action: () -> Void) -> [RemoteFeedLoader.Error] {
-        var capturedErrors = [RemoteFeedLoader.Error]()
-        sut.load { capturedErrors.append($0) }
+    private func capturedErrors(_ sut: RemoteFeedLoader, completeWithError: RemoteFeedLoader.Error, when action: () -> Void) -> [RemoteFeedLoader.Result] {
+        var capturedResults = [RemoteFeedLoader.Result]()
+        sut.load { capturedResults.append($0) }
         action()
         
-        return capturedErrors
+        return capturedResults
     }
     
     private class HTTPClientSpy: HTTPClient {

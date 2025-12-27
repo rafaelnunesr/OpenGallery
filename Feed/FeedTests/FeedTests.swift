@@ -21,7 +21,7 @@ class RemoteFeedLoader {
         self.client = client
     }
     
-    func load(completion: @escaping (Error) -> Void = { _ in }) {
+    func load(completion: @escaping (Error) -> Void) {
         client.get(from: url) { error in
             completion(.connectivity)
         }
@@ -43,7 +43,7 @@ struct RemoteFeedLoaderTests {
         let url = URL(string: "https://anyURL.com")!
         let (sut, client) = makeSUT(url: url)
         
-        sut.load()
+        sut.load { _ in }
         
         #expect(client.requestedURLs == [url])
     }
@@ -52,8 +52,8 @@ struct RemoteFeedLoaderTests {
         let url = URL(string: "https://anyURL.com")!
         let (sut, client) = makeSUT(url: url)
         
-        sut.load()
-        sut.load()
+        sut.load { _ in }
+        sut.load { _ in }
         
         #expect(client.requestedURLs == [url, url])
     }

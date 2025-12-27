@@ -81,32 +81,27 @@ struct RemoteFeedLoaderTests {
         #expect(capturedErrors == [.connectivity])
     }
     
-    @Test func load_deliversErrorOnNon2xxHTTPResponse() {
+    @Test(arguments: [198, 199, 300, 301, 400, 500])
+    func load_deliversErrorOnNon2xxHTTPResponse(statusCode: Int) {
         let (sut, client) = makeSUT()
-        let samples = [198, 199, 300, 301, 400, 500]
+        var capturedErrors = [RemoteFeedLoader.Error]()
         
-        samples.enumerated().forEach { index, code in
-            var capturedErrors = [RemoteFeedLoader.Error]()
-            sut.load { capturedErrors.append($0) }
-            
-            client.complete(withStatusCode: code, at: index)
-            #expect(capturedErrors == [.invalidData])
-        }
+        sut.load { capturedErrors.append($0) }
+        client.complete(withStatusCode: statusCode)
+        
+        #expect(capturedErrors == [.invalidData])
     }
     
-    @Test func load_deliversErrorOn2xxHTTPResponseWithInvalidJSON() {
+    @Test(arguments: [200, 201, 250, 298, 299])
+    func load_deliversErrorOn2xxHTTPResponseWithInvalidJSON(statusCode: Int) {
         let (sut, client) = makeSUT()
-        let samples = [200, 201, 250, 298, 299]
+        var capturedErrors = [RemoteFeedLoader.Error]()
         
-        samples.enumerated().forEach { index, code in
-            var capturedErrors = [RemoteFeedLoader.Error]()
-            sut.load { capturedErrors.append($0) }
-            
-            let invalidJSON = Data("invalid json".utf8)
-            client.complete(withStatusCode: code, data: invalidJSON, at: index)
-            
-            #expect(capturedErrors == [.invalidData])
-        }
+        sut.load { capturedErrors.append($0) }
+        let invalidJSON = Data("invalid json".utf8)
+        client.complete(withStatusCode: statusCode, data: invalidJSON)
+        
+        #expect(capturedErrors == [.invalidData])
     }
     
     // MARK: - Helpers
@@ -133,7 +128,7 @@ struct RemoteFeedLoaderTests {
             messages[index].completion(.failure(error))
         }
         
-        func complete(withStatusCode code: Int, data: Data = Data(), at index: Int) {
+        func complete(withStatusCode code: Int, data: Data = Data(), at index: Int = 0) {
             let response = HTTPURLResponse(
                 url: requestedURLs[index],
                 statusCode: code,

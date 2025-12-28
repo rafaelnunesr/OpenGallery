@@ -85,42 +85,14 @@ struct RemoteFeedLoaderTests {
     func load_deliversItemsOn2xxHTTPResponseWithJSONItems(statusCode: Int) {
         let (sut, client) = makeSUT()
         
-        let (item1, item1JSON) = makeItem(
-            id: 1,
-            title: "Some title",
-            dateStart: (date: Date(timeIntervalSince1970: 1735689600), iso8601: "2025-01-01T00:00:00Z"),
-            dateEnd: (date: Date(timeIntervalSince1970: 1738368540), iso8601: "2025-02-01T00:09:00Z"),
-            description: "some description",
-            placeOfOrigin: "some place",
-            artistID: 1,
-            artistTitle: "some artist",
-            imageID: "some id",
-            dimensionsDetails: [DimensionsDetails(depth: 1, width: 1, height: 1, diameter: 1)]
-        )
-        
-        let (item2, item2JSON) = makeItem(
-            id: 1,
-            title: "Some title",
-            dateStart: (date: Date(timeIntervalSince1970: 1735776000), iso8601: "2025-01-02T00:00:00Z"),
-            dateEnd: (date: Date(timeIntervalSince1970: 1736467200), iso8601: "2025-01-10T00:00:00Z"),
-            description: "some description",
-            placeOfOrigin: "some place",
-            artistID: 1,
-            artistTitle: "some artist",
-            imageID: "some id",
-            dimensionsDetails: [DimensionsDetails(depth: 1, width: 1, height: 1, diameter: 1)]
-        )
-        
-        let itemsJSON = [
-            "data": [item1JSON, item2JSON]
-        ]
+        let (items, itemsJSON) = makeItemsJSON()
         
         let capturedResults = capturedResults(sut) {
             let json = try! JSONSerialization.data(withJSONObject: itemsJSON)
             client.complete(withStatusCode: 200, data: json)
         }
         
-        #expect(capturedResults == [.success([item1, item2])])
+        #expect(capturedResults == [.success(items)])
     }
     
     // MARK: - Helpers
@@ -189,6 +161,45 @@ struct RemoteFeedLoaderTests {
         ]
         
         return (item, itemJSON)
+    }
+    
+    private func makeItem1() -> (item: FeedItem, json: [String: Any?]) {
+        makeItem(
+            id: 1,
+            title: "Some title",
+            dateStart: (date: Date(timeIntervalSince1970: 1735689600), iso8601: "2025-01-01T00:00:00Z"),
+            dateEnd: (date: Date(timeIntervalSince1970: 1738368540), iso8601: "2025-02-01T00:09:00Z"),
+            description: "some description",
+            placeOfOrigin: "some place",
+            artistID: 1,
+            artistTitle: "some artist",
+            imageID: "some id",
+            dimensionsDetails: [DimensionsDetails(depth: 1, width: 1, height: 1, diameter: 1)]
+        )
+    }
+    
+    private func makeItem2() -> (item: FeedItem, json: [String: Any?]) {
+        makeItem(
+            id: 1,
+            title: "Some title",
+            dateStart: (date: Date(timeIntervalSince1970: 1735776000), iso8601: "2025-01-02T00:00:00Z"),
+            dateEnd: (date: Date(timeIntervalSince1970: 1736467200), iso8601: "2025-01-10T00:00:00Z"),
+            description: "some description",
+            placeOfOrigin: "some place",
+            artistID: 1,
+            artistTitle: "some artist",
+            imageID: "some id",
+            dimensionsDetails: [DimensionsDetails(depth: 1, width: 1, height: 1, diameter: 1)]
+        )
+    }
+    
+    private func makeItemsJSON() -> (items: [FeedItem], json: [String: Any?]) {
+        let (item1, item1JSON) = makeItem1()
+        let (item2, item2JSON) = makeItem2()
+        
+        let json = ["data": [item1JSON, item2JSON]]
+        
+        return ([item1, item2], json)
     }
     
     private class HTTPClientSpy: HTTPClient {

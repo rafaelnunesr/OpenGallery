@@ -32,7 +32,7 @@ class URLSessionHTTPClient {
     }
     
     func get(from url: URL) {
-        _ = session.makeDataTask(with: url) { _, _, _ in }
+        _ = session.makeDataTask(with: url) { _, _, _ in }.resume()
     }
 }
 
@@ -48,18 +48,45 @@ struct URLSessionHTTPClientTests {
         #expect(session.receivedURLs == [url])
     }
     
+    @Test
+    func getFromURL_resumesDataTaskWithURL() {
+        let url = URL(string: "http://any-url.com")!
+        let session = URLSessionSpy()
+        let task = URLSessionDataTaskSpy()
+        session.stub(url: url, task: task)
+        
+        let sut = URLSessionHTTPClient(session: session)
+        
+        sut.get(from: url)
+        
+        #expect(task.resumeCallCount == 1)
+    }
+    
     // MARK: - Helpers
     
     private class URLSessionSpy: URLSessionProtocol {
         var receivedURLs = [URL]()
+        private var stubs = [URL: HTTPDataTask]()
+        
+        func stub(url: URL, task: HTTPDataTask) {
+            stubs[url] = task
+        }
         
         func makeDataTask(with url: URL, completionHandler: @escaping @Sendable (Data?, URLResponse?, (any Error)?) -> Void) -> HTTPDataTask {
             receivedURLs.append(url)
-            return DummyURLSessionDataTask()
+            return stubs[url] ?? DummyURLSessionDataTask()
         }
     }
     
     private final class DummyURLSessionDataTask: HTTPDataTask {
         func resume() {}
+    }
+    
+    private class URLSessionDataTaskSpy: HTTPDataTask {
+        var resumeCallCount = 0
+        
+        func resume() {
+            resumeCallCount += 1
+        }
     }
 }

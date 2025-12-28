@@ -55,7 +55,7 @@ public protocol HTTPClient {
 
 private enum FeedItemsMapper {
     static func map(_ data: Data, _ response: HTTPURLResponse) throws -> [FeedItem] {
-        guard (200..<300).contains(response.statusCode) else {
+        guard OK_Statuses.contains(response.statusCode) else {
             throw RemoteFeedLoader.Error.invalidData
         }
         
@@ -65,6 +65,8 @@ private enum FeedItemsMapper {
         let root = try decoder.decode(Root.self, from: data)
         return root.data.map { $0.item }
     }
+    
+    private static let OK_Statuses = 200..<300
     
     private struct Root: Decodable {
         let data: [Item]

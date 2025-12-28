@@ -8,15 +8,31 @@
 import Foundation
 import Testing
 
+protocol URLSessionProtocol {
+    func makeDataTask(with url: URL, completionHandler: @escaping @Sendable (Data?, URLResponse?, (any Error)?) -> Void) -> HTTPDataTask
+}
+
+protocol HTTPDataTask {
+    func resume()
+}
+
+extension URLSessionDataTask: HTTPDataTask {}
+
+extension URLSession: URLSessionProtocol {
+    func makeDataTask(with url: URL, completionHandler: @escaping @Sendable (Data?, URLResponse?, (any Error)?) -> Void) -> HTTPDataTask {
+        dataTask(with: url, completionHandler: completionHandler)
+    }
+}
+
 class URLSessionHTTPClient {
-    private let session: URLSession
+    private let session: URLSessionProtocol
     
-    init(session: URLSession) {
+    init(session: URLSessionProtocol) {
         self.session = session
     }
     
     func get(from url: URL) {
-        session.dataTask(with: url) { _, _, _ in }
+        _ = session.makeDataTask(with: url) { _, _, _ in }
     }
 }
 
@@ -25,7 +41,6 @@ struct URLSessionHTTPClientTests {
     func getFromURL_createsDataTaskWithURL() {
         let url = URL(string: "https://any-url.com")!
         let session = URLSessionSpy()
-        
         let sut = URLSessionHTTPClient(session: session)
         
         sut.get(from: url)
@@ -35,14 +50,16 @@ struct URLSessionHTTPClientTests {
     
     // MARK: - Helpers
     
-    private class URLSessionSpy: URLSession, @unchecked Sendable {
+    private class URLSessionSpy: URLSessionProtocol {
         var receivedURLs = [URL]()
         
-        override func dataTask(with url: URL, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTask {
+        func makeDataTask(with url: URL, completionHandler: @escaping @Sendable (Data?, URLResponse?, (any Error)?) -> Void) -> HTTPDataTask {
             receivedURLs.append(url)
-            return FakeURLSessionDataTask()
+            return DummyURLSessionDataTask()
         }
     }
     
-    private class FakeURLSessionDataTask: URLSessionDataTask, @unchecked Sendable {}
+    private final class DummyURLSessionDataTask: HTTPDataTask {
+        func resume() {}
+    }
 }

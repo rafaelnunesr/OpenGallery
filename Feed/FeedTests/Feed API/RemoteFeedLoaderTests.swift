@@ -49,7 +49,7 @@ final class RemoteFeedLoaderTests {
             client.complete(with: clientError)
         }
         
-        #expect(assertEqual(actual: capturedResults, expected: [.failure(RemoteFeedLoader.Error.connectivity)]))
+        #expect(assertEqual(actual: capturedResults, expected: [failure(.connectivity)]))
     }
     
     @Test(arguments: [198, 199, 300, 301, 400, 500])
@@ -60,7 +60,7 @@ final class RemoteFeedLoaderTests {
             client.complete(withStatusCode: statusCode)
         }
         
-        #expect(assertEqual(actual: capturedResults, expected: [.failure(RemoteFeedLoader.Error.invalidData)]))
+        #expect(assertEqual(actual: capturedResults, expected: [failure(.invalidData)]))
     }
     
     @Test(arguments: [200, 201, 250, 298, 299])
@@ -72,7 +72,7 @@ final class RemoteFeedLoaderTests {
             client.complete(withStatusCode: statusCode, data: invalidJSON)
         }
         
-        #expect(assertEqual(actual: capturedResults, expected: [.failure(RemoteFeedLoader.Error.invalidData)]))
+        #expect(assertEqual(actual: capturedResults, expected: [failure(.invalidData)]))
     }
     
     @Test(arguments: [200, 201, 250, 298, 299])
@@ -141,6 +141,10 @@ final class RemoteFeedLoaderTests {
         action()
         
         return capturedResults
+    }
+    
+    private func failure(_ error: RemoteFeedLoader.Error) -> RemoteFeedLoader.Result {
+        .failure(error)
     }
     
     private func assertEqual(actual: [RemoteFeedLoader.Result], expected: [RemoteFeedLoader.Result]) -> Bool {

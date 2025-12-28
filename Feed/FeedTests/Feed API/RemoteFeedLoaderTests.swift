@@ -38,7 +38,7 @@ struct RemoteFeedLoaderTests {
     @Test func load_deliversErrorOnClientError() {
         let (sut, client) = makeSUT()
         
-        let capturedResults = capturedResults(sut, completeWith: .failure(.connectivity)) {
+        let capturedResults = capturedResults(sut) {
             let clientError = NSError(domain: "Test", code: 0)
             client.complete(with: clientError)
         }
@@ -50,7 +50,7 @@ struct RemoteFeedLoaderTests {
     func load_deliversErrorOnNon2xxHTTPResponse(statusCode: Int) {
         let (sut, client) = makeSUT()
         
-        let capturedResults = capturedResults(sut, completeWith: .failure(.invalidData)) {
+        let capturedResults = capturedResults(sut) {
             client.complete(withStatusCode: statusCode)
         }
         
@@ -61,7 +61,7 @@ struct RemoteFeedLoaderTests {
     func load_deliversErrorOn2xxHTTPResponseWithInvalidJSON(statusCode: Int) {
         let (sut, client) = makeSUT()
         
-        let capturedResults = capturedResults(sut, completeWith: .failure(.invalidData)) {
+        let capturedResults = capturedResults(sut) {
             let invalidJSON = Data("invalid json".utf8)
             client.complete(withStatusCode: statusCode, data: invalidJSON)
         }
@@ -73,7 +73,7 @@ struct RemoteFeedLoaderTests {
     func load_deliversNoItemsOn2xxHTTPResponseWithEmptyJSONList(statusCode: Int) {
         let (sut, client) = makeSUT()
         
-        let capturedResults = capturedResults(sut, completeWith: .success([])) {
+        let capturedResults = capturedResults(sut) {
             let emptyListJSON = Data("{\"data\": []}".utf8)
             client.complete(withStatusCode: statusCode, data: emptyListJSON)
         }
@@ -90,7 +90,7 @@ struct RemoteFeedLoaderTests {
         return (sut, client)
     }
     
-    private func capturedResults(_ sut: RemoteFeedLoader, completeWith result: RemoteFeedLoader.Result, when action: () -> Void) -> [RemoteFeedLoader.Result] {
+    private func capturedResults(_ sut: RemoteFeedLoader, when action: () -> Void) -> [RemoteFeedLoader.Result] {
         var capturedResults = [RemoteFeedLoader.Result]()
         sut.load { capturedResults.append($0) }
         action()

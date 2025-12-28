@@ -8,16 +8,20 @@
 import Foundation
 
 enum FeedItemsMapper {
-    static func map(_ data: Data, _ response: HTTPURLResponse) throws -> [FeedItem] {
+    static func map(_ data: Data, from response: HTTPURLResponse) -> RemoteFeedLoader.Result {
         guard OK_Statuses.contains(response.statusCode) else {
-            throw RemoteFeedLoader.Error.invalidData
+            return .failure(.invalidData)
         }
         
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
         
-        let root = try decoder.decode(Root.self, from: data)
-        return root.data.map { $0.item }
+        do {
+            let items = try decoder.decode(Root.self, from: data)
+            return .success(items.data.map(\.item))
+        } catch {
+            return .failure(.invalidData)
+        }
     }
     
     private static let OK_Statuses = 200..<300

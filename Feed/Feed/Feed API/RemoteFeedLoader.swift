@@ -34,7 +34,12 @@ public class RemoteFeedLoader {
     public func load(completion: @escaping (Result) -> Void) {
         client.get(from: url) { result in
             switch result {
-            case let .success(data, _):
+            case let .success(data, response):
+                guard (200..<300).contains(response.statusCode) else {
+                    completion(.failure(.invalidData))
+                    return
+                }
+                
                 let decoder = JSONDecoder()
                 decoder.dateDecodingStrategy = .iso8601
                 

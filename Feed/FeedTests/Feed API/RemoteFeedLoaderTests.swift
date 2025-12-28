@@ -81,6 +81,48 @@ struct RemoteFeedLoaderTests {
         #expect(capturedResults == [.success([])])
     }
     
+    @Test(arguments: [200, 201, 250, 298, 299])
+    func load_deliversItemsOn2xxHTTPResponseWithJSONItems(statusCode: Int) {
+        let (sut, client) = makeSUT()
+        
+        let (item1, item1JSON) = makeItem(
+            id: 1,
+            title: "Some title",
+            dateStart: (date: Date(timeIntervalSince1970: 1735689600), iso8601: "2025-01-01T00:00:00Z"),
+            dateEnd: (date: Date(timeIntervalSince1970: 1738368540), iso8601: "2025-02-01T00:09:00Z"),
+            description: "some description",
+            placeOfOrigin: "some place",
+            artistID: 1,
+            artistTitle: "some artist",
+            imageID: "some id",
+            dimensionsDetails: [DimensionsDetails(depth: 1, width: 1, height: 1, diameter: 1)]
+        )
+        
+        let (item2, item2JSON) = makeItem(
+            id: 1,
+            title: "Some title",
+            dateStart: (date: Date(timeIntervalSince1970: 1735776000), iso8601: "2025-01-02T00:00:00Z"),
+            dateEnd: (date: Date(timeIntervalSince1970: 1736467200), iso8601: "2025-01-10T00:00:00Z"),
+            description: "some description",
+            placeOfOrigin: "some place",
+            artistID: 1,
+            artistTitle: "some artist",
+            imageID: "some id",
+            dimensionsDetails: [DimensionsDetails(depth: 1, width: 1, height: 1, diameter: 1)]
+        )
+        
+        let itemsJSON = [
+            "data": [item1JSON, item2JSON]
+        ]
+        
+        let capturedResults = capturedResults(sut) {
+            let json = try! JSONSerialization.data(withJSONObject: itemsJSON)
+            client.complete(withStatusCode: 200, data: json)
+        }
+        
+        #expect(capturedResults == [.success([item1, item2])])
+    }
+    
     // MARK: - Helpers
     
     private func makeSUT(url: URL = URL(string: "https://anyURL.com")!) -> (sut: RemoteFeedLoader, client: HTTPClientSpy) {
@@ -96,6 +138,57 @@ struct RemoteFeedLoaderTests {
         action()
         
         return capturedResults
+    }
+    
+    private func makeItem(
+        id: Int = 1,
+        title: String = "Some title",
+        dateStart: (date: Date, iso8601: String),
+        dateEnd: (date: Date, iso8601: String)? = nil,
+        description: String = "some description",
+        placeOfOrigin: String = "some place",
+        artistID: Int = 1,
+        artistTitle: String = "some artist",
+        imageID: String = "some id",
+        dimensionsDetails: [DimensionsDetails] = []
+    ) -> (item: FeedItem, json: [String: Any?]) {
+        let item = FeedItem(
+            id: id,
+            title: title,
+            dateStart: dateStart.date,
+            dateEnd: dateEnd?.date,
+            description: description,
+            dimensionsDetails: dimensionsDetails,
+            placeOfOrigin: placeOfOrigin,
+            artistID: artistID,
+            artistTitle: artistTitle,
+            imageID: imageID
+        )
+        
+        
+        let dimensionsDetailsJSON: [[String: Any?]] = dimensionsDetails.map {
+            [
+                "depth": $0.depth,
+                "width": $0.width,
+                "height": $0.height,
+                "diameter": $0.diameter
+            ]
+        }
+        
+        let itemJSON: [String : Any?] = [
+            "id": id,
+            "title": title,
+            "date_start": dateStart.iso8601,
+            "date_end": dateEnd?.iso8601,
+            "description": description,
+            "dimensions_details": dimensionsDetailsJSON,
+            "place_of_origin": placeOfOrigin,
+            "artist_id": artistID,
+            "artist_title": artistTitle,
+            "image_id": imageID
+        ]
+        
+        return (item, itemJSON)
     }
     
     private class HTTPClientSpy: HTTPClient {

@@ -62,3 +62,20 @@ public struct DimensionsDetails: Equatable {
         self.diameter = diameter
     }
 }
+
+extension FeedItem: Decodable {
+    private enum CodingKeys: String, CodingKey {
+        case id
+        case title
+        case dateStart = "date_start"
+        case dateEnd = "date_end"
+        case description
+        case dimensionsDetails = "dimensions_details"
+        case placeOfOrigin = "place_of_origin"
+        case artistID = "artist_id"
+        case artistTitle = "artist_title"
+        case imageID = "image_id"
+    }
+}
+
+extension DimensionsDetails: Decodable {}

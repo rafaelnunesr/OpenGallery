@@ -7,11 +7,6 @@
 
 import Foundation
 
-public enum HTTPClientResult {
-    case success(Data, HTTPURLResponse)
-    case failure(Error)
-}
-
 public class RemoteFeedLoader {
     private let client: HTTPClient
     private let url: URL
@@ -47,11 +42,6 @@ public class RemoteFeedLoader {
         }
     }
 }
-
-public protocol HTTPClient {
-    func get(from url: URL, completion: @escaping (HTTPClientResult) -> Void)
-}
-
 
 private enum FeedItemsMapper {
     static func map(_ data: Data, _ response: HTTPURLResponse) throws -> [FeedItem] {

@@ -74,8 +74,8 @@ struct RemoteFeedLoaderTests {
         let (sut, client) = makeSUT()
         
         let capturedResults = capturedResults(sut) {
-            let emptyListJSON = Data("{\"data\": []}".utf8)
-            client.complete(withStatusCode: statusCode, data: emptyListJSON)
+            let emptyListJSONData = makeJSONData(json: FeedItem.makeEmptyJSON())
+            client.complete(withStatusCode: statusCode, data: emptyListJSONData)
         }
         
         #expect(capturedResults == [.success([])])
@@ -88,8 +88,8 @@ struct RemoteFeedLoaderTests {
         let (items, itemsJSON) = FeedItem.makeItemsJSON()
         
         let capturedResults = capturedResults(sut) {
-            let json = try! JSONSerialization.data(withJSONObject: itemsJSON)
-            client.complete(withStatusCode: 200, data: json)
+            let data = makeJSONData(json: itemsJSON)
+            client.complete(withStatusCode: statusCode, data: data)
         }
         
         #expect(capturedResults == [.success(items)])
@@ -102,6 +102,10 @@ struct RemoteFeedLoaderTests {
         let sut = RemoteFeedLoader(url: url, client: client)
         
         return (sut, client)
+    }
+    
+    private func makeJSONData(json: [String : Any?]) -> Data {
+        try! JSONSerialization.data(withJSONObject: json)
     }
     
     private func capturedResults(_ sut: RemoteFeedLoader, when action: () -> Void) -> [RemoteFeedLoader.Result] {

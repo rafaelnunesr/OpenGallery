@@ -98,4 +98,8 @@ extension FeedItem {
         
         return ([item1, item2], json)
     }
+    
+    static func makeEmptyJSON() -> [String: Any?] {
+        ["data": []]
+    }
 }

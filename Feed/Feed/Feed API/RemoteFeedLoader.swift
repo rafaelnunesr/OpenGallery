@@ -44,7 +44,7 @@ public class RemoteFeedLoader {
                 decoder.dateDecodingStrategy = .iso8601
                 
                 if let root = try? decoder.decode(Root.self, from: data) {
-                    completion(.success(root.data))
+                    completion(.success(root.data.map { $0.item }))
                 } else {
                     completion(.failure(.invalidData))
                 }
@@ -60,5 +60,5 @@ public protocol HTTPClient {
 }
 
 private struct Root: Decodable {
-    let data: [FeedItem]
+    let data: [Item]
 }

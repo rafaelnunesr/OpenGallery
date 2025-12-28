@@ -63,7 +63,18 @@ public struct DimensionsDetails: Equatable {
     }
 }
 
-extension FeedItem: Decodable {
+struct Item: Decodable {
+    let id: Int
+    let title: String
+    let dateStart: Date
+    let dateEnd: Date?
+    let description: String?
+    let dimensionsDetails: [ItemDimensionsDetails]
+    let placeOfOrigin: String?
+    let artistID: Int?
+    let artistTitle: String?
+    let imageID: String?
+    
     private enum CodingKeys: String, CodingKey {
         case id
         case title
@@ -76,6 +87,33 @@ extension FeedItem: Decodable {
         case artistTitle = "artist_title"
         case imageID = "image_id"
     }
+    
+    var item: FeedItem {
+        FeedItem(id: id,
+                 title: title,
+                 dateStart: dateStart,
+                 dateEnd: dateEnd,
+                 description: description,
+                 dimensionsDetails: dimensionsDetails.map { $0.item },
+                 placeOfOrigin: placeOfOrigin,
+                 artistID: artistID,
+                 artistTitle: artistTitle,
+                 imageID: imageID)
+    }
 }
 
-extension DimensionsDetails: Decodable {}
+struct ItemDimensionsDetails: Decodable {
+    let depth: Double?
+    let width: Double?
+    let height: Double?
+    let diameter: Double?
+    
+    var item: DimensionsDetails {
+        DimensionsDetails(
+            depth: depth,
+            width: width,
+            height: height,
+            diameter: diameter
+        )
+    }
+}

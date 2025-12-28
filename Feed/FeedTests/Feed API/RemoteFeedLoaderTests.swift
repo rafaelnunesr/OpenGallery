@@ -49,7 +49,7 @@ final class RemoteFeedLoaderTests {
             client.complete(with: clientError)
         }
         
-        #expect(capturedResults == [.failure(.connectivity)])
+        #expect(assertEqual(actual: capturedResults, expected: [.failure(.connectivity)]))
     }
     
     @Test(arguments: [198, 199, 300, 301, 400, 500])
@@ -60,7 +60,7 @@ final class RemoteFeedLoaderTests {
             client.complete(withStatusCode: statusCode)
         }
         
-        #expect(capturedResults == [.failure(.invalidData)])
+        #expect(assertEqual(actual: capturedResults, expected: [.failure(.invalidData)]))
     }
     
     @Test(arguments: [200, 201, 250, 298, 299])
@@ -72,7 +72,7 @@ final class RemoteFeedLoaderTests {
             client.complete(withStatusCode: statusCode, data: invalidJSON)
         }
         
-        #expect(capturedResults == [.failure(.invalidData)])
+        #expect(assertEqual(actual: capturedResults, expected: [.failure(.invalidData)]))
     }
     
     @Test(arguments: [200, 201, 250, 298, 299])
@@ -84,7 +84,7 @@ final class RemoteFeedLoaderTests {
             client.complete(withStatusCode: statusCode, data: emptyListJSONData)
         }
         
-        #expect(capturedResults == [.success([])])
+        #expect(assertEqual(actual: capturedResults, expected: [.success([])]))
     }
     
     @Test(arguments: [200, 201, 250, 298, 299])
@@ -98,7 +98,7 @@ final class RemoteFeedLoaderTests {
             client.complete(withStatusCode: statusCode, data: data)
         }
         
-        #expect(capturedResults == [.success(items)])
+        #expect(assertEqual(actual: capturedResults, expected: [.success(items)]))
     }
     
     @Test
@@ -141,6 +141,25 @@ final class RemoteFeedLoaderTests {
         action()
         
         return capturedResults
+    }
+    
+    private func assertEqual(actual: [RemoteFeedLoader.Result], expected: [RemoteFeedLoader.Result]) -> Bool {
+        guard actual.count == expected.count else { return false }
+        
+        return zip(actual, expected).allSatisfy { actualResult, expectedResult in
+            switch (actualResult, expectedResult) {
+                
+            case let (.success(actualItems), .success(expectedItems)):
+                return actualItems == expectedItems
+                
+            case let (.failure(actualError), .failure(expectedError)):
+                return actualError == expectedError
+                
+            default:
+                return false
+            }
+        }
+        
     }
     
     private class HTTPClientSpy: HTTPClient {

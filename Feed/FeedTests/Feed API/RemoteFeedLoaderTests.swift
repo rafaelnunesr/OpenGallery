@@ -9,7 +9,13 @@ import Foundation
 import Testing
 import Feed
 
-struct RemoteFeedLoaderTests {
+final class RemoteFeedLoaderTests {
+    private var sutTracker: MemoryLeakTracker<RemoteFeedLoader>?
+    
+    deinit {
+        sutTracker?.verify()
+    }
+    
     @Test func init_doesNotRequestDataFromURL() {
         let client = makeSUT().client
         
@@ -95,11 +101,32 @@ struct RemoteFeedLoaderTests {
         #expect(capturedResults == [.success(items)])
     }
     
+    @Test
+    func load_doesNotDeliverResultAfterSUTInstanceHasBeenDeallocated() {
+        let url = URL(string: "https://anyURL.com")!
+        let client = HTTPClientSpy()
+        var sut: RemoteFeedLoader? = RemoteFeedLoader(url: url, client: client)
+        
+        var capturedResults = [RemoteFeedLoader.Result]()
+        sut?.load { capturedResults.append($0) }
+        
+        sut = nil
+        client.complete(withStatusCode: 200, data: makeJSONData(json: FeedItem.makeEmptyJSON()))
+        
+        #expect(capturedResults.isEmpty)
+    }
+    
     // MARK: - Helpers
     
-    private func makeSUT(url: URL = URL(string: "https://anyURL.com")!) -> (sut: RemoteFeedLoader, client: HTTPClientSpy) {
+    private func makeSUT(url: URL = URL(string: "https://anyURL.com")!,
+                         filePath: String = #file,
+                         line: Int = #line,
+                         column: Int = #column) -> (sut: RemoteFeedLoader, client: HTTPClientSpy) {
         let client = HTTPClientSpy()
         let sut = RemoteFeedLoader(url: url, client: client)
+        
+        let sourceLocation = SourceLocation(fileID: #fileID, filePath: filePath, line: line, column: column)
+        sutTracker = MemoryLeakTracker(instance: sut, sourceLocation: sourceLocation)
         
         return (sut, client)
     }

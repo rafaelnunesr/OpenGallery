@@ -101,6 +101,21 @@ final class RemoteFeedLoaderTests {
         #expect(capturedResults == [.success(items)])
     }
     
+    @Test
+    func load_doesNotDeliverResultAfterSUTInstanceHasBeenDeallocated() {
+        let url = URL(string: "https://anyURL.com")!
+        let client = HTTPClientSpy()
+        var sut: RemoteFeedLoader? = RemoteFeedLoader(url: url, client: client)
+        
+        var capturedResults = [RemoteFeedLoader.Result]()
+        sut?.load { capturedResults.append($0) }
+        
+        sut = nil
+        client.complete(withStatusCode: 200, data: makeJSONData(json: FeedItem.makeEmptyJSON()))
+        
+        #expect(capturedResults.isEmpty)
+    }
+    
     // MARK: - Helpers
     
     private func makeSUT(url: URL = URL(string: "https://anyURL.com")!,

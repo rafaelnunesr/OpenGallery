@@ -9,7 +9,13 @@ import Foundation
 import Testing
 import Feed
 
-struct RemoteFeedLoaderTests {
+final class RemoteFeedLoaderTests {
+    private var sutTracker: MemoryLeakTracker<RemoteFeedLoader>?
+    
+    deinit {
+        sutTracker?.verify()
+    }
+    
     @Test func init_doesNotRequestDataFromURL() {
         let client = makeSUT().client
         
@@ -97,9 +103,15 @@ struct RemoteFeedLoaderTests {
     
     // MARK: - Helpers
     
-    private func makeSUT(url: URL = URL(string: "https://anyURL.com")!) -> (sut: RemoteFeedLoader, client: HTTPClientSpy) {
+    private func makeSUT(url: URL = URL(string: "https://anyURL.com")!,
+                         filePath: String = #file,
+                         line: Int = #line,
+                         column: Int = #column) -> (sut: RemoteFeedLoader, client: HTTPClientSpy) {
         let client = HTTPClientSpy()
         let sut = RemoteFeedLoader(url: url, client: client)
+        
+        let sourceLocation = SourceLocation(fileID: #fileID, filePath: filePath, line: line, column: column)
+        sutTracker = MemoryLeakTracker(instance: sut, sourceLocation: sourceLocation)
         
         return (sut, client)
     }

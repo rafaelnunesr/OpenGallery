@@ -34,14 +34,17 @@ class URLSessionHTTPClient {
 class URLSessionHTTPClientTests {
     private var sutTracker: MemoryLeakTracker<URLSessionHTTPClient>?
     
+    init() {
+        URLProtocolStub.startInterceptingRequests()
+    }
+    
     deinit {
+        URLProtocolStub.stopInterceptingRequests()
         sutTracker?.verify()
     }
     
     @Test
     func getFromURL_failsOnRequestError() async {
-        URLProtocolStub.startInterceptingRequests()
-        
         let error = makeError()
         let result = await getResultFor(data: nil, response: nil, error: error).result
         
@@ -52,14 +55,10 @@ class URLSessionHTTPClientTests {
 
         #expect(receivedError.domain == error.domain)
         #expect(receivedError.code == error.code)
-        
-        URLProtocolStub.stopInterceptingRequests()
     }
     
     @Test
     func getFromURL_performGETRequestsWithURL() async {
-        URLProtocolStub.startInterceptingRequests()
-        
         var capturedRequests = [URLRequest]()
         URLProtocolStub.observeRequests { capturedRequests.append($0) }
         
@@ -67,14 +66,10 @@ class URLSessionHTTPClientTests {
         
         #expect(capturedRequests[0].url == url)
         #expect(capturedRequests[0].httpMethod == "GET")
-        
-        URLProtocolStub.stopInterceptingRequests()
     }
     
     @Test
     func getFromURL_failsOnAllNilValues() async {
-        URLProtocolStub.startInterceptingRequests()
-        
         let result = await getResultFor(data: nil, response: nil, error: nil).result
             
         guard case let .failure(receivedError) = result else {
@@ -83,8 +78,6 @@ class URLSessionHTTPClientTests {
         }
         
         #expect(receivedError is URLSessionHTTPClient.UnexpectedValuesRepresentation)
-
-        URLProtocolStub.stopInterceptingRequests()
     }
     
     // MARK: - Helpers

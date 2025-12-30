@@ -26,7 +26,12 @@ class URLSessionHTTPClient {
     }
 }
 
-struct URLSessionHTTPClientTests {
+class URLSessionHTTPClientTests {
+    private var sutTracker: MemoryLeakTracker<URLSessionHTTPClient>?
+    
+    deinit {
+        sutTracker?.verify()
+    }
     
     @Test
     func getFromURL_failsOnRequestError() async {
@@ -72,8 +77,15 @@ struct URLSessionHTTPClientTests {
     
     // MARK: - Helpers
     
-    private func makeSUT() -> URLSessionHTTPClient {
-        URLSessionHTTPClient()
+    private func makeSUT(filePath: String = #file,
+                         line: Int = #line,
+                         column: Int = #column) -> URLSessionHTTPClient {
+        let sut = URLSessionHTTPClient()
+        
+        let sourceLocation = SourceLocation(fileID: #fileID, filePath: filePath, line: line, column: column)
+        sutTracker = MemoryLeakTracker(instance: sut, sourceLocation: sourceLocation)
+        
+        return sut
     }
     
     @discardableResult

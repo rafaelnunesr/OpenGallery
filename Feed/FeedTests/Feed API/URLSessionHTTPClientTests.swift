@@ -35,7 +35,7 @@ struct URLSessionHTTPClientTests {
         let error = makeError()
         URLProtocolStub.stub(data: nil, response: nil, error: error)
         
-        let sut = URLSessionHTTPClient()
+        let sut = makeSUT()
         
         let result = await awaitResult(from: sut, url: url)
         
@@ -57,7 +57,7 @@ struct URLSessionHTTPClientTests {
         let error = makeError()
         URLProtocolStub.stub(data: nil, response: nil, error: error)
         
-        let sut = URLSessionHTTPClient()
+        let sut = makeSUT()
         
         var capturedRequests = [URLRequest]()
         URLProtocolStub.observeRequests { capturedRequests.append($0) }
@@ -71,6 +71,10 @@ struct URLSessionHTTPClientTests {
     }
     
     // MARK: - Helpers
+    
+    private func makeSUT() -> URLSessionHTTPClient {
+        URLSessionHTTPClient()
+    }
     
     @discardableResult
     private func awaitResult(from sut: URLSessionHTTPClient, url: URL) async -> HTTPClientResult {

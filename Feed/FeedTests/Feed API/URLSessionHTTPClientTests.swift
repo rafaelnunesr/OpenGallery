@@ -41,13 +41,9 @@ class URLSessionHTTPClientTests {
     @Test
     func getFromURL_failsOnRequestError() async {
         URLProtocolStub.startInterceptingRequests()
-        let url = makeValidURL()
+        
         let error = makeError()
-        URLProtocolStub.stub(data: nil, response: nil, error: error)
-        
-        let sut = makeSUT()
-        
-        let result = await awaitResult(from: sut, url: url)
+        let result = await getResultFor(data: nil, response: nil, error: error).result
         
         guard case let .failure(receivedError as NSError) = result else {
             Issue.record("Expected failure with NSError \(error), got \(result)")
@@ -63,16 +59,11 @@ class URLSessionHTTPClientTests {
     @Test
     func getFromURL_performGETRequestsWithURL() async {
         URLProtocolStub.startInterceptingRequests()
-        let url = makeValidURL()
-        let error = makeError()
-        URLProtocolStub.stub(data: nil, response: nil, error: error)
-        
-        let sut = makeSUT()
         
         var capturedRequests = [URLRequest]()
         URLProtocolStub.observeRequests { capturedRequests.append($0) }
         
-        await awaitResult(from: sut, url: url)
+        let url = await getResultFor(data: nil, response: nil, error: makeError()).url
         
         #expect(capturedRequests[0].url == url)
         #expect(capturedRequests[0].httpMethod == "GET")
@@ -83,12 +74,8 @@ class URLSessionHTTPClientTests {
     @Test
     func getFromURL_failsOnAllNilValues() async {
         URLProtocolStub.startInterceptingRequests()
-        let url = makeValidURL()
-        URLProtocolStub.stub(data: nil, response: nil, error: nil)
         
-        let sut = makeSUT()
-        
-        let result = await awaitResult(from: sut, url: url)
+        let result = await getResultFor(data: nil, response: nil, error: nil).result
             
         guard case let .failure(receivedError) = result else {
             Issue.record("Expected failure, got \(result)")
@@ -114,7 +101,19 @@ class URLSessionHTTPClientTests {
     }
     
     @discardableResult
-    private func awaitResult(from sut: URLSessionHTTPClient, url: URL) async -> HTTPClientResult {
+    private func getResultFor(data: Data?, response: URLResponse?, error: Error?) async -> (result: HTTPClientResult, url: URL)  {
+        let url = makeValidURL()
+        URLProtocolStub.stub(data: data, response: response, error: error)
+        
+        let sut = makeSUT()
+        
+        let result =  await executeRequest(from: sut, url: url)
+        
+        return (result, url)
+    }
+    
+    @discardableResult
+    private func executeRequest(from sut: URLSessionHTTPClient, url: URL) async -> HTTPClientResult {
         await withCheckedContinuation { continuation in
             sut.get(from: url) { result in
                 continuation.resume(returning: result)

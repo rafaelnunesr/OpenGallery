@@ -31,8 +31,8 @@ struct URLSessionHTTPClientTests {
     @Test
     func getFromURL_failsOnRequestError() async {
         URLProtocolStub.startInterceptingRequests()
-        let url = URL(string: "http://any-url.com")!
-        let error = NSError(domain: "any error", code: 1)
+        let url = makeValidURL()
+        let error = makeError()
         URLProtocolStub.stub(data: nil, response: nil, error: error)
         
         let sut = URLSessionHTTPClient()
@@ -53,8 +53,8 @@ struct URLSessionHTTPClientTests {
     @Test
     func getFromURL_performGETRequestsWithURL() async {
         URLProtocolStub.startInterceptingRequests()
-        let url = URL(string: "http://any-url.com")!
-        let error = NSError(domain: "any error", code: 1)
+        let url = makeValidURL()
+        let error = makeError()
         URLProtocolStub.stub(data: nil, response: nil, error: error)
         
         let sut = URLSessionHTTPClient()
@@ -79,6 +79,14 @@ struct URLSessionHTTPClientTests {
                 continuation.resume(returning: result)
             }
         }
+    }
+    
+    private func makeError() -> NSError {
+        NSError(domain: "any error", code: 1)
+    }
+    
+    private func makeValidURL() -> URL {
+        URL(string: "http://any-url.com")!
     }
     
     private class URLProtocolStub: URLProtocol {
@@ -118,7 +126,7 @@ struct URLSessionHTTPClientTests {
             request
         }
         
-        override func startLoading() {            
+        override func startLoading() {
             if let data = URLProtocolStub.stub?.data {
                 client?.urlProtocol(self, didLoad: data)
             }

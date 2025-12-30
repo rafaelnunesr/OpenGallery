@@ -105,7 +105,6 @@ class URLSessionHTTPClientTests {
         return (result, url)
     }
     
-    @discardableResult
     private func executeRequest(from sut: URLSessionHTTPClient, url: URL) async -> HTTPClientResult {
         await withCheckedContinuation { continuation in
             sut.get(from: url) { result in

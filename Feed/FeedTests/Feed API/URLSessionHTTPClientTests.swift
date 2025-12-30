@@ -26,7 +26,7 @@ class URLSessionHTTPClient {
     }
 }
 
-class URLSessionHTTPClientTests {
+struct URLSessionHTTPClientTests {
     
     @Test
     func getFromURL_failsOnRequestError() async {

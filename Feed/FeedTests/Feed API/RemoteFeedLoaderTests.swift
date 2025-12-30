@@ -23,7 +23,7 @@ final class RemoteFeedLoaderTests {
     }
     
     @Test func load_requestsDataFromURL() {
-        let url = URL(string: "https://anyURL.com")!
+        let url = anyURL()
         let (sut, client) = makeSUT(url: url)
         
         sut.load { _ in }
@@ -32,7 +32,7 @@ final class RemoteFeedLoaderTests {
     }
     
     @Test func loadTwice_requestsDataFromURLTwice() {
-        let url = URL(string: "https://anyURL.com")!
+        let url = anyURL()
         let (sut, client) = makeSUT(url: url)
         
         sut.load { _ in }
@@ -45,8 +45,7 @@ final class RemoteFeedLoaderTests {
         let (sut, client) = makeSUT()
         
         let capturedResults = capturedResults(sut) {
-            let clientError = NSError(domain: "Test", code: 0)
-            client.complete(with: clientError)
+            client.complete(with: anyNSError())
         }
         
         #expect(assertEqual(actual: capturedResults, expected: [failure(.connectivity)]))
@@ -68,7 +67,7 @@ final class RemoteFeedLoaderTests {
         let (sut, client) = makeSUT()
         
         let capturedResults = capturedResults(sut) {
-            let invalidJSON = Data("invalid json".utf8)
+            let invalidJSON = invalidJSONData()
             client.complete(withStatusCode: statusCode, data: invalidJSON)
         }
         
@@ -103,7 +102,7 @@ final class RemoteFeedLoaderTests {
     
     @Test
     func load_doesNotDeliverResultAfterSUTInstanceHasBeenDeallocated() {
-        let url = URL(string: "https://anyURL.com")!
+        let url = anyURL()
         let client = HTTPClientSpy()
         var sut: RemoteFeedLoader? = RemoteFeedLoader(url: url, client: client)
         
@@ -118,7 +117,7 @@ final class RemoteFeedLoaderTests {
     
     // MARK: - Helpers
     
-    private func makeSUT(url: URL = URL(string: "https://anyURL.com")!,
+    private func makeSUT(url: URL = anyURL(),
                          filePath: String = #file,
                          line: Int = #line,
                          column: Int = #column) -> (sut: RemoteFeedLoader, client: HTTPClientSpy) {

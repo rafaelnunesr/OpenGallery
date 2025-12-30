@@ -45,7 +45,7 @@ class URLSessionHTTPClientTests {
     
     @Test
     func getFromURL_failsOnRequestError() async {
-        let error = makeError()
+        let error = anyNSError()
         let result = await getResultFor(data: nil, response: nil, error: error).result
         
         guard case let .failure(receivedError as NSError) = result else {
@@ -62,7 +62,7 @@ class URLSessionHTTPClientTests {
         var capturedRequests = [URLRequest]()
         URLProtocolStub.observeRequests { capturedRequests.append($0) }
         
-        let url = await getResultFor(data: nil, response: nil, error: makeError()).url
+        let url = await getResultFor(data: nil, response: nil, error: anyNSError()).url
         
         #expect(capturedRequests[0].url == url)
         #expect(capturedRequests[0].httpMethod == "GET")
@@ -95,7 +95,7 @@ class URLSessionHTTPClientTests {
     
     @discardableResult
     private func getResultFor(data: Data?, response: URLResponse?, error: Error?) async -> (result: HTTPClientResult, url: URL)  {
-        let url = makeValidURL()
+        let url = anyURL()
         URLProtocolStub.stub(data: data, response: response, error: error)
         
         let sut = makeSUT()
@@ -112,14 +112,6 @@ class URLSessionHTTPClientTests {
                 continuation.resume(returning: result)
             }
         }
-    }
-    
-    private func makeError() -> NSError {
-        NSError(domain: "any error", code: 1)
-    }
-    
-    private func makeValidURL() -> URL {
-        URL(string: "http://any-url.com")!
     }
     
     private class URLProtocolStub: URLProtocol {

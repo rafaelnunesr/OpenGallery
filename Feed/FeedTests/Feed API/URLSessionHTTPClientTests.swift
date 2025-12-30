@@ -17,10 +17,14 @@ class URLSessionHTTPClient {
         self.session = session
     }
     
+    struct UnexpectedValuesRepresentation: Error {}
+    
     func get(from url: URL, completion: @escaping (HTTPClientResult) -> Void) {
         session.dataTask(with: url) { _, _, error in
             if let error = error {
                 completion(.failure(error))
+            } else {
+                completion(.failure(UnexpectedValuesRepresentation()))
             }
         }.resume()
     }
@@ -72,6 +76,26 @@ class URLSessionHTTPClientTests {
         #expect(capturedRequests[0].url == url)
         #expect(capturedRequests[0].httpMethod == "GET")
         
+        URLProtocolStub.stopInterceptingRequests()
+    }
+    
+    @Test
+    func getFromURL_failsOnAllNilValues() async {
+        URLProtocolStub.startInterceptingRequests()
+        let url = makeValidURL()
+        URLProtocolStub.stub(data: nil, response: nil, error: nil)
+        
+        let sut = makeSUT()
+        
+        let result = await awaitResult(from: sut, url: url)
+            
+        guard case let .failure(receivedError) = result else {
+            Issue.record("Expected failure, got \(result)")
+            return
+        }
+        
+        #expect(receivedError is URLSessionHTTPClient.UnexpectedValuesRepresentation)
+
         URLProtocolStub.stopInterceptingRequests()
     }
     

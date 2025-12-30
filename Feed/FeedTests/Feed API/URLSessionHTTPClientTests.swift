@@ -30,6 +30,7 @@ class URLSessionHTTPClient {
     }
 }
 
+@Suite(.serialized)
 class URLSessionHTTPClientTests {
     private var sutTracker: MemoryLeakTracker<URLSessionHTTPClient>?
     

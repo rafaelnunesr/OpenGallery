@@ -99,13 +99,9 @@ class URLSessionHTTPClientTests {
         for (key, value) in invalidCases {
             let result = await getResultFor(data: value.data, response: value.response, error: value.error).result
             
-            switch result {
-            case .success:
-                Issue.record("Expected failure, got success for \(key)")
-            case .failure:
+            guard case .failure = result else {
+                Issue.record("Expected failure, got \(result) for \(key)")
                 break
-            @unknown default:
-                Issue.record("Expected failure for \(key)")
             }
         }
     }

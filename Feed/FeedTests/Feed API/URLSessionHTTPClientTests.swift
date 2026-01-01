@@ -10,7 +10,7 @@ import Testing
 
 import Feed
 
-class URLSessionHTTPClient {
+class URLSessionHTTPClient: HTTPClient {
     private let session: URLSession
     
     init(session: URLSession = .shared) {
@@ -143,7 +143,7 @@ class URLSessionHTTPClientTests {
     
     private func makeSUT(filePath: String = #file,
                          line: Int = #line,
-                         column: Int = #column) -> URLSessionHTTPClient {
+                         column: Int = #column) -> HTTPClient {
         let sut = URLSessionHTTPClient()
         
         let sourceLocation = SourceLocation(fileID: #fileID, filePath: filePath, line: line, column: column)
@@ -164,7 +164,7 @@ class URLSessionHTTPClientTests {
         return (result, url)
     }
     
-    private func executeRequest(from sut: URLSessionHTTPClient, url: URL) async -> HTTPClientResult {
+    private func executeRequest(from sut: HTTPClient, url: URL) async -> HTTPClientResult {
         await withCheckedContinuation { continuation in
             sut.get(from: url) { result in
                 continuation.resume(returning: result)

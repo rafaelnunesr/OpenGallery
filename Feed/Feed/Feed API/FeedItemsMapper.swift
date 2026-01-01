@@ -13,11 +13,8 @@ enum FeedItemsMapper {
             return .failure(RemoteFeedLoader.Error.invalidData)
         }
         
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .iso8601
-        
         do {
-            let items = try decoder.decode(Root.self, from: data)
+            let items = try JSONDecoder().decode(Root.self, from: data)
             return .success(items.data.map(\.item))
         } catch {
             return .failure(RemoteFeedLoader.Error.invalidData)
@@ -33,8 +30,7 @@ enum FeedItemsMapper {
     private struct Item: Decodable {
         let id: Int
         let title: String
-        let dateStart: Date
-        let dateEnd: Date?
+        let dateDisplay: String?
         let description: String?
         let dimensionsDetails: [ItemDimensionsDetails]
         let placeOfOrigin: String?
@@ -45,10 +41,9 @@ enum FeedItemsMapper {
         enum CodingKeys: String, CodingKey {
             case id
             case title
-            case dateStart = "date_start"
-            case dateEnd = "date_end"
+            case dateDisplay = "date_display"
             case description
-            case dimensionsDetails = "dimensions_details"
+            case dimensionsDetails = "dimensions_detail"
             case placeOfOrigin = "place_of_origin"
             case artistID = "artist_id"
             case artistTitle = "artist_title"
@@ -58,8 +53,7 @@ enum FeedItemsMapper {
         var item: FeedItem {
             FeedItem(id: id,
                      title: title,
-                     dateStart: dateStart,
-                     dateEnd: dateEnd,
+                     dateDisplay: dateDisplay,
                      description: description,
                      dimensionsDetails: dimensionsDetails.map { $0.item },
                      placeOfOrigin: placeOfOrigin,

@@ -12,8 +12,7 @@ extension FeedItem {
     static func makeItem(
         id: Int = 1,
         title: String = "Some title",
-        dateStart: (date: Date, iso8601: String),
-        dateEnd: (date: Date, iso8601: String)? = nil,
+        dateDisplay: String? = "410 - 400 BCE",
         description: String = "some description",
         placeOfOrigin: String = "some place",
         artistID: Int = 1,
@@ -24,8 +23,7 @@ extension FeedItem {
         let item = FeedItem(
             id: id,
             title: title,
-            dateStart: dateStart.date,
-            dateEnd: dateEnd?.date,
+            dateDisplay: dateDisplay,
             description: description,
             dimensionsDetails: dimensionsDetails,
             placeOfOrigin: placeOfOrigin,
@@ -47,10 +45,9 @@ extension FeedItem {
         let itemJSON: [String : Any?] = [
             "id": id,
             "title": title,
-            "date_start": dateStart.iso8601,
-            "date_end": dateEnd?.iso8601,
+            "date_display": dateDisplay,
             "description": description,
-            "dimensions_details": dimensionsDetailsJSON,
+            "dimensions_detail": dimensionsDetailsJSON,
             "place_of_origin": placeOfOrigin,
             "artist_id": artistID,
             "artist_title": artistTitle,
@@ -64,8 +61,7 @@ extension FeedItem {
         makeItem(
             id: 1,
             title: "Some title",
-            dateStart: (date: Date(timeIntervalSince1970: 1735689600), iso8601: "2025-01-01T00:00:00Z"),
-            dateEnd: (date: Date(timeIntervalSince1970: 1738368540), iso8601: "2025-02-01T00:09:00Z"),
+            dateDisplay: "410 - 400 BCE",
             description: "some description",
             placeOfOrigin: "some place",
             artistID: 1,
@@ -79,8 +75,7 @@ extension FeedItem {
         makeItem(
             id: 1,
             title: "Some title",
-            dateStart: (date: Date(timeIntervalSince1970: 1735776000), iso8601: "2025-01-02T00:00:00Z"),
-            dateEnd: (date: Date(timeIntervalSince1970: 1736467200), iso8601: "2025-01-10T00:00:00Z"),
+            dateDisplay: "300 - 280 BCE",
             description: "some description",
             placeOfOrigin: "some place",
             artistID: 1,

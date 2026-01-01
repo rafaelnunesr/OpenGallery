@@ -80,6 +80,34 @@ class URLSessionHTTPClientTests {
         #expect(receivedError is URLSessionHTTPClient.UnexpectedValuesRepresentation)
     }
     
+    @Test
+    func geFromURL_failsOnAllInvalidRepresentationCases() async {
+        let invalidCases: [Int: (data: Data?, response: URLResponse?, error: Error?)] = [
+            1: (data: nil, response: nonHTTPURLResponse(), error: nil),
+            2: (data: nil, response: anyHTTPURLResponse(), error: nil),
+            3: (data: anyData(), response: nil, error: nil),
+            4: (data: anyData(), response: nil, error: anyNSError()),
+            5: (data: nil, response: nonHTTPURLResponse(), error: anyNSError()),
+            6: (data: nil, response: anyHTTPURLResponse(), error: anyNSError()),
+            7: (data: anyData(), response: nonHTTPURLResponse(), error: anyNSError()),
+            8: (data: anyData(), response: anyHTTPURLResponse(), error: anyNSError()),
+            9: (data: anyData(), response: nonHTTPURLResponse(), error: nil)
+        ]
+        
+        for (key, value) in invalidCases {
+            let result = await getResultFor(data: value.data, response: value.response, error: value.error).result
+            
+            switch result {
+            case .success:
+                Issue.record("Expected failure, got success for \(key)")
+            case .failure:
+                break
+            @unknown default:
+                Issue.record("Expected failure for \(key)")
+            }
+        }
+    }
+    
     // MARK: - Helpers
     
     private func makeSUT(filePath: String = #file,

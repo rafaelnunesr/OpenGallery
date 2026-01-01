@@ -23,6 +23,10 @@ func anyData() -> Data {
     Data("any data".utf8)
 }
 
+func emptyData() -> Data {
+    Data()
+}
+
 func anyHTTPURLResponse() -> HTTPURLResponse? {
     HTTPURLResponse(url: anyURL(), statusCode: 200, httpVersion: nil, headerFields: nil)
 }

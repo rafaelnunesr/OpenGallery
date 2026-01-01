@@ -23,7 +23,7 @@ class URLSessionHTTPClient {
         session.dataTask(with: url) { data, response, error in
             if let error = error {
                 completion(.failure(error))
-            } else if let data, data.count > 0, let response = response as? HTTPURLResponse {
+            } else if let data, let response = response as? HTTPURLResponse {
                 completion(.success(data, response))
             } else {
                 completion(.failure(UnexpectedValuesRepresentation()))
@@ -86,14 +86,13 @@ class URLSessionHTTPClientTests {
     func geFromURL_failsOnAllInvalidRepresentationCases() async {
         let invalidCases: [Int: (data: Data?, response: URLResponse?, error: Error?)] = [
             1: (data: nil, response: nonHTTPURLResponse(), error: nil),
-            2: (data: nil, response: anyHTTPURLResponse(), error: nil),
-            3: (data: anyData(), response: nil, error: nil),
-            4: (data: anyData(), response: nil, error: anyNSError()),
-            5: (data: nil, response: nonHTTPURLResponse(), error: anyNSError()),
-            6: (data: nil, response: anyHTTPURLResponse(), error: anyNSError()),
-            7: (data: anyData(), response: nonHTTPURLResponse(), error: anyNSError()),
-            8: (data: anyData(), response: anyHTTPURLResponse(), error: anyNSError()),
-            9: (data: anyData(), response: nonHTTPURLResponse(), error: nil)
+            2: (data: anyData(), response: nil, error: nil),
+            3: (data: anyData(), response: nil, error: anyNSError()),
+            4: (data: nil, response: nonHTTPURLResponse(), error: anyNSError()),
+            5: (data: nil, response: anyHTTPURLResponse(), error: anyNSError()),
+            6: (data: anyData(), response: nonHTTPURLResponse(), error: anyNSError()),
+            7: (data: anyData(), response: anyHTTPURLResponse(), error: anyNSError()),
+            8: (data: anyData(), response: nonHTTPURLResponse(), error: nil)
         ]
         
         for (key, value) in invalidCases {
@@ -109,6 +108,23 @@ class URLSessionHTTPClientTests {
     @Test
     func getFromURL_succeedsOnHTTPURLResponseWithData() async {
         let data = anyData()
+        let response = anyHTTPURLResponse()
+        
+        let result = await getResultFor(data: data, response: response, error: nil).result
+        
+        guard case let .success(receivedData, receivedResponse) = result else {
+            Issue.record("Expected success, got \(result)")
+            return
+        }
+        
+        #expect(receivedData == data)
+        #expect(receivedResponse.statusCode == response?.statusCode)
+        #expect(receivedResponse.url == response?.url)
+    }
+    
+    @Test
+    func getFromURL_succeedsWithEmptyDataOnHTTPURLResponse() async {
+        let data = emptyData()
         let response = anyHTTPURLResponse()
         
         let result = await getResultFor(data: data, response: response, error: nil).result

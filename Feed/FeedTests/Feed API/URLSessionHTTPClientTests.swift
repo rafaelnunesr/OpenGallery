@@ -9,7 +9,7 @@ import Feed
 import Foundation
 import Testing
 
-@Suite(.serialized)
+@Suite(.serialized, .timeLimit(.minutes(1)))
 class URLSessionHTTPClientTests {
     private var sutTracker: MemoryLeakTracker<URLSessionHTTPClient>?
     

@@ -12,6 +12,19 @@ import Testing
 struct FeedAPIEndToEndTests {
 
     @Test func endToEndTestServerGETFeedResult() async {
+        let receivedResult = await getFeedResult()
+        
+        guard case let .success(items) = receivedResult else {
+            Issue.record("Expected success result, got \(receivedResult)")
+            return
+        }
+        
+        #expect(!items.isEmpty)
+    }
+    
+    // MARK: - Helpers
+    
+    private func getFeedResult() async -> LoadFeedResult? {
         let url = URL(string: "https://api.artic.edu/api/v1/artworks?page=1&limit=1")!
         let client = URLSessionHTTPClient()
         let loader = RemoteFeedLoader(url: url, client: client)
@@ -25,11 +38,6 @@ struct FeedAPIEndToEndTests {
             }
         }
         
-        guard case let .success(items) = receivedResult else {
-            Issue.record("Expected success result, got \(receivedResult)")
-            return
-        }
-        
-        #expect(!items.isEmpty)
+        return receivedResult
     }
 }

@@ -1,0 +1,32 @@
+{
+  "configurations" : [
+    {
+      "id" : "E5E3466F-9F45-4721-BD58-D2753EF86FDD",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false,
+    "performanceAntipatternCheckerEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:Artwork.xcodeproj",
+        "identifier" : "1BBBF86C2F005FF600BA192C",
+        "name" : "ArtworkTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Artwork.xcodeproj",
+        "identifier" : "1BA25CDE2F06C1C70009937F",
+        "name" : "ArtworkAPIEndToEndTests"
+      }
+    }
+  ],
+  "version" : 1
+}

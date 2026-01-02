@@ -52,7 +52,7 @@ final class ArtworkAPIEndToEndTests {
         column: Int = #column
     ) -> any ArtworkLoader {
         let url = URL(string: "https://api.artic.edu/api/v1/artworks?page=1&limit=1")!
-        let client = URLSessionHTTPClient()
+        let client = URLSessionHTTPClient(session: URLSession(configuration: .ephemeral))
         let loader = RemoteArtworkLoader(url: url, client: client)
         
         let sourceLocation = SourceLocation(fileID: #fileID, filePath: filePath, line: line, column: column)

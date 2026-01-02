@@ -1,0 +1,49 @@
+# =========================
+# Xcode
+# =========================
+DerivedData/
+build/
+
+# Xcode user-specific files
+xcuserdata/
+*.xcuserstate
+**/xcuserdata/**/UserInterfaceState.xcuserstate
+
+*.pbxuser
+
+# =========================
+# Swift Package Manager
+# =========================
+.build/
+.swiftpm/xcode/package.xcworkspace
+.swiftpm/xcode/xcuserdata
+
+# =========================
+# Archives & Instruments
+# =========================
+*.xcarchive
+*.trace
+
+# =========================
+# Logs & temp files
+# =========================
+*.log
+*.tmp
+*.temp
+
+# =========================
+# macOS system files
+# =========================
+.DS_Store
+.AppleDouble
+.LSOverride
+.Spotlight-V100
+.Trashes
+
+# =========================
+# Editors / IDEs
+# =========================
+.idea/
+.vscode/
+*.swp
+*.swo

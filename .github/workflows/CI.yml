@@ -21,7 +21,7 @@ jobs:
           set -o pipefail
 
           xcodebuild clean test \
-            -project EssentialFeed/EssentialFeed.xcodeproj \
+            -project Artwork/Artwork.xcodeproj \
             -scheme CI \
             -sdk macosx \
             -destination 'platform=macOS' \

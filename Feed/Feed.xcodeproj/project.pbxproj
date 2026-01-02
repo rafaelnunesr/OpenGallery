@@ -35,6 +35,16 @@
 		1BBBF86D2F005FF600BA192C /* FeedTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FeedTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		1B3E36AE2F081CB500079D0B /* Exceptions for "FeedTests" folder in "FeedAPIEndToEndTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Helpers/MemoryLeakerTracker.swift,
+			);
+			target = 1BA25CDE2F06C1C70009937F /* FeedAPIEndToEndTests */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		1BA25CE02F06C1C70009937F /* FeedAPIEndToEndTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
@@ -48,6 +58,9 @@
 		};
 		1BBBF86E2F005FF600BA192C /* FeedTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				1B3E36AE2F081CB500079D0B /* Exceptions for "FeedTests" folder in "FeedAPIEndToEndTests" target */,
+			);
 			path = FeedTests;
 			sourceTree = "<group>";
 		};

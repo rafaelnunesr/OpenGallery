@@ -10,8 +10,7 @@ import Foundation
 public struct FeedItem: Equatable {
     public let id: Int
     public let title: String
-    public let dateStart: Date
-    public let dateEnd: Date?
+    public let dateDisplay: String?
     public let description: String?
     public let dimensionsDetails: [DimensionsDetails]
     public let placeOfOrigin: String?
@@ -22,8 +21,7 @@ public struct FeedItem: Equatable {
     public init(
         id: Int,
         title: String,
-        dateStart: Date,
-        dateEnd: Date?,
+        dateDisplay: String?,
         description: String?,
         dimensionsDetails: [DimensionsDetails],
         placeOfOrigin: String?,
@@ -33,8 +31,7 @@ public struct FeedItem: Equatable {
     ) {
         self.id = id
         self.title = title
-        self.dateStart = dateStart
-        self.dateEnd = dateEnd
+        self.dateDisplay = dateDisplay
         self.description = description
         self.dimensionsDetails = dimensionsDetails
         self.placeOfOrigin = placeOfOrigin

@@ -1,0 +1,16 @@
+//
+//  LoadFeedResult.swift
+//  Feed
+//
+//  Created by Rafael Rios on 28/12/25.
+//
+
+public enum LoadFeedResult {
+    case success([FeedItem])
+    case failure(Error)
+}
+
+public protocol FeedLoader {
+    associatedtype Error: Swift.Error
+    func load(completion: @escaping (LoadFeedResult) -> Void)
+}

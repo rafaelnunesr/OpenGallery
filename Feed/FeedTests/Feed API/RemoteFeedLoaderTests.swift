@@ -23,7 +23,7 @@ final class RemoteFeedLoaderTests {
     }
     
     @Test func load_requestsDataFromURL() {
-        let url = URL(string: "https://anyURL.com")!
+        let url = anyURL()
         let (sut, client) = makeSUT(url: url)
         
         sut.load { _ in }
@@ -32,7 +32,7 @@ final class RemoteFeedLoaderTests {
     }
     
     @Test func loadTwice_requestsDataFromURLTwice() {
-        let url = URL(string: "https://anyURL.com")!
+        let url = anyURL()
         let (sut, client) = makeSUT(url: url)
         
         sut.load { _ in }
@@ -45,11 +45,10 @@ final class RemoteFeedLoaderTests {
         let (sut, client) = makeSUT()
         
         let capturedResults = capturedResults(sut) {
-            let clientError = NSError(domain: "Test", code: 0)
-            client.complete(with: clientError)
+            client.complete(with: anyNSError())
         }
         
-        #expect(capturedResults == [.failure(.connectivity)])
+        #expect(assertEqual(actual: capturedResults, expected: [failure(.connectivity)]))
     }
     
     @Test(arguments: [198, 199, 300, 301, 400, 500])
@@ -60,7 +59,7 @@ final class RemoteFeedLoaderTests {
             client.complete(withStatusCode: statusCode)
         }
         
-        #expect(capturedResults == [.failure(.invalidData)])
+        #expect(assertEqual(actual: capturedResults, expected: [failure(.invalidData)]))
     }
     
     @Test(arguments: [200, 201, 250, 298, 299])
@@ -68,11 +67,11 @@ final class RemoteFeedLoaderTests {
         let (sut, client) = makeSUT()
         
         let capturedResults = capturedResults(sut) {
-            let invalidJSON = Data("invalid json".utf8)
+            let invalidJSON = invalidJSONData()
             client.complete(withStatusCode: statusCode, data: invalidJSON)
         }
         
-        #expect(capturedResults == [.failure(.invalidData)])
+        #expect(assertEqual(actual: capturedResults, expected: [failure(.invalidData)]))
     }
     
     @Test(arguments: [200, 201, 250, 298, 299])
@@ -84,7 +83,7 @@ final class RemoteFeedLoaderTests {
             client.complete(withStatusCode: statusCode, data: emptyListJSONData)
         }
         
-        #expect(capturedResults == [.success([])])
+        #expect(assertEqual(actual: capturedResults, expected: [.success([])]))
     }
     
     @Test(arguments: [200, 201, 250, 298, 299])
@@ -98,12 +97,12 @@ final class RemoteFeedLoaderTests {
             client.complete(withStatusCode: statusCode, data: data)
         }
         
-        #expect(capturedResults == [.success(items)])
+        #expect(assertEqual(actual: capturedResults, expected: [.success(items)]))
     }
     
     @Test
     func load_doesNotDeliverResultAfterSUTInstanceHasBeenDeallocated() {
-        let url = URL(string: "https://anyURL.com")!
+        let url = anyURL()
         let client = HTTPClientSpy()
         var sut: RemoteFeedLoader? = RemoteFeedLoader(url: url, client: client)
         
@@ -118,7 +117,7 @@ final class RemoteFeedLoaderTests {
     
     // MARK: - Helpers
     
-    private func makeSUT(url: URL = URL(string: "https://anyURL.com")!,
+    private func makeSUT(url: URL = anyURL(),
                          filePath: String = #file,
                          line: Int = #line,
                          column: Int = #column) -> (sut: RemoteFeedLoader, client: HTTPClientSpy) {
@@ -141,6 +140,29 @@ final class RemoteFeedLoaderTests {
         action()
         
         return capturedResults
+    }
+    
+    private func failure(_ error: RemoteFeedLoader.Error) -> RemoteFeedLoader.Result {
+        .failure(error)
+    }
+    
+    private func assertEqual(actual: [RemoteFeedLoader.Result], expected: [RemoteFeedLoader.Result]) -> Bool {
+        guard actual.count == expected.count else { return false }
+        
+        return zip(actual, expected).allSatisfy { actualResult, expectedResult in
+            switch (actualResult, expectedResult) {
+                
+            case let (.success(actualItems), .success(expectedItems)):
+                return actualItems == expectedItems
+                
+            case let (.failure(actualError as RemoteFeedLoader.Error), .failure(expectedError as RemoteFeedLoader.Error)):
+                return actualError == expectedError
+                
+            default:
+                return false
+            }
+        }
+        
     }
     
     private class HTTPClientSpy: HTTPClient {

@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: macos-latest
+    timeout-minutes: 8
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Xcode version
+        run: xcodebuild -version
+
+      - name: Build and Test (macOS only)
+        run: |
+          set -o pipefail
+
+          xcodebuild clean test \
+            -project EssentialFeed/EssentialFeed.xcodeproj \
+            -scheme CI \
+            -sdk macosx \
+            -destination 'platform=macOS' \
+            ONLY_ACTIVE_ARCH=YES \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO

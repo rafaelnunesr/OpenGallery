@@ -9,7 +9,7 @@ import Feed
 import Foundation
 import Testing
 
-class FeedAPIEndToEndTests {
+final class FeedAPIEndToEndTests {
     private var clientTracker: MemoryLeakTracker<URLSessionHTTPClient>?
     private var loaderTracker: MemoryLeakTracker<RemoteFeedLoader>?
 

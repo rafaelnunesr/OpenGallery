@@ -10,7 +10,7 @@ import Foundation
 import Testing
 
 @Suite(.serialized, .timeLimit(.minutes(1)))
-class URLSessionHTTPClientTests {
+final class URLSessionHTTPClientTests {
     private var sutTracker: MemoryLeakTracker<URLSessionHTTPClient>?
     
     init() {

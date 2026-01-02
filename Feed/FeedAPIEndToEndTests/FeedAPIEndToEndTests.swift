@@ -9,6 +9,7 @@ import Feed
 import Foundation
 import Testing
 
+@Suite(.timeLimit(.minutes(1)))
 final class FeedAPIEndToEndTests {
     private var clientTracker: MemoryLeakTracker<URLSessionHTTPClient>?
     private var loaderTracker: MemoryLeakTracker<RemoteFeedLoader>?

@@ -1,0 +1,38 @@
+//
+//  RemoteArtworkLoader.swift
+//  Artwork
+//
+//  Created by Rafael Rios on 27/12/25.
+//
+
+import Foundation
+
+public class RemoteArtworkLoader: ArtworkLoader {
+    private let client: HTTPClient
+    private let url: URL
+    
+    public enum Error: Swift.Error {
+        case connectivity
+        case invalidData
+    }
+    
+    public typealias Result = LoadArtworkResult
+    
+    public init(url: URL, client: HTTPClient) {
+        self.url = url
+        self.client = client
+    }
+    
+    public func load(completion: @escaping (Result) -> Void) {
+        client.get(from: url) { [weak self] result in
+            guard self != nil else { return }
+            
+            switch result {
+            case let .success(data, response):
+                completion(ArtworkItemsMapper.map(data, from: response))
+            case .failure:
+                completion(.failure(Error.connectivity))
+            }
+        }
+    }
+}

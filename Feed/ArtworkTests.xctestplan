@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "DF967422-75FE-4D56-980A-5426BB219713",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "performanceAntipatternCheckerEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:Artwork.xcodeproj",
+        "identifier" : "1BBBF86C2F005FF600BA192C",
+        "name" : "ArtworkTests"
+      }
+    }
+  ],
+  "version" : 1
+}

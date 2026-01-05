@@ -8,8 +8,6 @@
 **OpenGallery** is a sample iOS project focused on **clean architecture**, **testability**, and **networking design**.  
 The app demonstrates how to load and display remote artwork data using a modular and well-tested API layer.
 
-This project is intended for **learning, experimentation, and interview preparation**, showcasing modern iOS development practices.
-
 ---
 
 ## 📱 Features

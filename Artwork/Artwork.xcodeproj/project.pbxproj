@@ -40,7 +40,7 @@
 		1B3E36AE2F081CB500079D0B /* Exceptions for "ArtworkTests" folder in "ArtworkAPIEndToEndTests" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Helpers/MemoryLeakerTracker.swift,
+				Shared/MemoryLeakerTracker.swift,
 			);
 			target = 1BA25CDE2F06C1C70009937F /* ArtworkAPIEndToEndTests */;
 		};

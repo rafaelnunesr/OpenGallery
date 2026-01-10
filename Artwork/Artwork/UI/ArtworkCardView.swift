@@ -7,7 +7,8 @@
 
 import SwiftUI
 
-public struct ArtworkCardViewModel {
+public struct ArtworkCardViewModel: Identifiable {
+    public let id: String
     let title: String
     let date: String
     let description: String
@@ -23,7 +24,14 @@ public struct ArtworkCardViewModel {
         "by " + artist
     }
     
-    public init(title: String, date: String, description: String, dimensions: String, placeOfOrigin: String, artist: String) {
+    public init(id: String,
+                title: String,
+                date: String,
+                description: String,
+                dimensions: String,
+                placeOfOrigin: String,
+                artist: String) {
+        self.id = id
         self.title = title
         self.date = date
         self.description = description
@@ -89,6 +97,7 @@ public struct ArtworkCardView<Image: View>: View {
 
 #Preview {
     let model = ArtworkCardViewModel(
+        id: "id",
         title: "A title",
         date: "400 BCE",
         description: "Some description",

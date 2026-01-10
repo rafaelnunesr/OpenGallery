@@ -20,6 +20,7 @@ final class ArtworkCardViewTests: XCTestCase {
     
     private func makeModel() -> ArtworkCardViewModel {
         ArtworkCardViewModel(
+            id: "id",
             title: "A title",
             date: "400 BCE",
             description: "Some description",

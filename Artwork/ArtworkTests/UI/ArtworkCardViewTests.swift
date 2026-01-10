@@ -12,8 +12,8 @@ import SwiftUI
 final class ArtworkCardViewTests: XCTestCase {
     func test_layout() {
         let sut = ArtworkCardView(model: makeModel(), image: makeImageView())
-        assert(snapshot: sut.snapshot(for: .light()), named: "IDLE_LAYOUT_LIGHT")
-        assert(snapshot: sut.snapshot(for: .dark()), named: "IDLE_LAYOUT_DARK")
+        assert(snapshot: sut.snapshot(for: .light()), named: "ARTWORK_CARD_VIEW_LAYOUT_LIGHT")
+        assert(snapshot: sut.snapshot(for: .dark()), named: "ARTWORK_CARD_VIEW_LAYOUT_DARK")
     }
     
     // MARK: - Helpers

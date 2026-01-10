@@ -7,7 +7,6 @@
 
 import XCTest
 import Artwork
-import SwiftUI
 
 final class ArtworkCardViewTests: XCTestCase {
     func test_layout() {

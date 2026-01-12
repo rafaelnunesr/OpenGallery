@@ -14,8 +14,8 @@ final class ImageViewTests: XCTestCase {
         
         let sut = makeSUT(isLoading: true)
         
-        record(snapshot: sut.snapshot(for: .light()), named: "IMAGE_VIEW_LOADING_LAYOUT_LIGHT")
-        record(snapshot: sut.snapshot(for: .dark()), named: "IMAGE_VIEW_LOADING_LAYOUT_DARK")
+        assert(snapshot: sut.snapshot(for: .light()), named: "IMAGE_VIEW_LOADING_LAYOUT_LIGHT")
+        assert(snapshot: sut.snapshot(for: .dark()), named: "IMAGE_VIEW_LOADING_LAYOUT_DARK")
         
         URLProtocolStub.stopInterceptingRequests()
     }

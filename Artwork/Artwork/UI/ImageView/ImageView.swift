@@ -9,6 +9,11 @@ import SwiftUI
 
 public struct ImageView: View {
     private let url: URL
+    @State private var imageState = ImageState.loading
+    
+    enum ImageState {
+        case loading
+    }
     
     public init(url: URL) {
         self.url = url
@@ -17,9 +22,17 @@ public struct ImageView: View {
     public var body: some View {
         AsyncImage(url: url) { _ in
         } placeholder: {
+            placeholder
+        }
+    }
+    
+    private var placeholder: some View {
+        switch imageState {
+        case .loading:
             ProgressView()
         }
     }
+    
 }
 
 #Preview {

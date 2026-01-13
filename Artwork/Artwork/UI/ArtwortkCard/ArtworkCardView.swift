@@ -15,6 +15,7 @@ public struct ArtworkCardViewModel: Identifiable {
     let dimensions: String
     let placeOfOrigin: String
     let artist: String
+    let imageURL: URL
     
     var detailsView: String {
         placeOfOrigin + " - " + date + " - " + dimensions
@@ -30,7 +31,8 @@ public struct ArtworkCardViewModel: Identifiable {
                 description: String,
                 dimensions: String,
                 placeOfOrigin: String,
-                artist: String) {
+                artist: String,
+                imageURL: URL) {
         self.id = id
         self.title = title
         self.date = date
@@ -38,16 +40,15 @@ public struct ArtworkCardViewModel: Identifiable {
         self.dimensions = dimensions
         self.placeOfOrigin = placeOfOrigin
         self.artist = artist
+        self.imageURL = imageURL
     }
 }
 
-public struct ArtworkCardView<Image: View>: View {
+public struct ArtworkCardView: View {
     private let model: ArtworkCardViewModel
-    private let image: Image
     
-    public init(model: ArtworkCardViewModel, image: Image) {
+    public init(model: ArtworkCardViewModel) {
         self.model = model
-        self.image = image
     }
     
     public var body: some View {
@@ -62,7 +63,7 @@ public struct ArtworkCardView<Image: View>: View {
     }
     
     private var imageView: some View {
-        image
+        ImageView(url: model.imageURL)
             .aspectRatio(contentMode: .fit)
             .frame(maxHeight: 400)
             .clipShape(RoundedRectangle(cornerRadius: 8))
@@ -103,8 +104,8 @@ public struct ArtworkCardView<Image: View>: View {
         description: "Some description",
         dimensions: "some dimension",
         placeOfOrigin: "some place",
-        artist: "An artist"
+        artist: "An artist",
+        imageURL: URL(string: "https://any-url.com")!
     )
-    let imageView = Color.red.opacity(0.1)
-    ArtworkCardView(model: model, image: imageView)
+    ArtworkCardView(model: model)
 }

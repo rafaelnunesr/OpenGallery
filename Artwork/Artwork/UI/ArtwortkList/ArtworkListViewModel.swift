@@ -6,9 +6,9 @@
 //
 
 public struct ArtworkListViewData {
-    let list: [(model: ArtworkCardViewModel, imageResult: ImageResult)]
+    let list: [ArtworkCardViewModel]
     
-    public init(list: [(model: ArtworkCardViewModel, imageResult: ImageResult)]) {
+    public init(list: [ArtworkCardViewModel]) {
         self.list = list
     }
 }

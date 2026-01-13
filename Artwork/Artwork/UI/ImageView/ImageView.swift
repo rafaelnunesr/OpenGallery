@@ -18,8 +18,10 @@ public struct AsyncImagePhaseView: View {
         switch phase {
         case .empty:
             ProgressView()
-        case .success:
-            EmptyView()
+        case let .success(image):
+            image
+                .resizable()
+                .scaledToFit()
         case .failure:
             retryView
         @unknown default:

@@ -14,3 +14,11 @@ public protocol ArtworkLoader {
     associatedtype Error: Swift.Error
     func load(completion: @escaping (LoadArtworkResult) -> Void)
 }
+
+class ArtworkLoaderDummy: ArtworkLoader {
+    enum Error: Swift.Error {}
+    
+    init() {}
+    
+    func load(completion: @escaping (LoadArtworkResult) -> Void) {}
+}

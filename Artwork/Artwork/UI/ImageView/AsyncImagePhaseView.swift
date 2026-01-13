@@ -18,16 +18,14 @@ public struct AsyncImagePhaseView: View {
     
     public var body: some View {
         switch phase {
-        case .empty:
-            ProgressView()
         case let .success(image):
             image
                 .resizable()
                 .scaledToFit()
         case .failure:
             retryView
-        @unknown default:
-            ProgressView()
+        default:
+            progressView
         }
     }
     
@@ -50,6 +48,10 @@ public struct AsyncImagePhaseView: View {
             }
         }
         .accessibilityIdentifier(AccessibilityIds.button)
+    }
+    
+    private var progressView: some View {
+        ProgressView()
     }
     
     public enum AccessibilityIds {

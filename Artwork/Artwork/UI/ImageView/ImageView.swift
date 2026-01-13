@@ -20,8 +20,8 @@ public struct ImageView: View {
             AsyncImagePhaseView(phase: phase) {
                 imageId = UUID()
             }
-            .id(imageId)
         }
+        .id(imageId)
     }
 }
 

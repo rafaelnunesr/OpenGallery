@@ -7,32 +7,39 @@
 
 import SwiftUI
 
+public struct AsyncImagePhaseView: View {
+    private let phase: AsyncImagePhase
+    
+    public init(phase: AsyncImagePhase) {
+        self.phase = phase
+    }
+    
+    public var body: some View {
+        switch phase {
+        case .empty:
+            ProgressView()
+        case .success:
+            EmptyView()
+        case .failure:
+            EmptyView()
+        @unknown default:
+            ProgressView()
+        }
+    }
+}
+
 public struct ImageView: View {
     private let url: URL
-    @State private var imageState = ImageState.loading
-    
-    enum ImageState {
-        case loading
-    }
     
     public init(url: URL) {
         self.url = url
     }
     
     public var body: some View {
-        AsyncImage(url: url) { _ in
-        } placeholder: {
-            placeholder
+        AsyncImage(url: url) { phase in
+            AsyncImagePhaseView(phase: phase)
         }
     }
-    
-    private var placeholder: some View {
-        switch imageState {
-        case .loading:
-            ProgressView()
-        }
-    }
-    
 }
 
 #Preview {

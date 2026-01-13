@@ -16,4 +16,11 @@ final class AsyncImagePhaseViewTests: XCTestCase {
         assert(snapshot: sut.snapshot(for: .light()), named: "ASYNC_IMAGE_PHASE_VIEW_LOADING_LAYOUT_LIGHT")
         assert(snapshot: sut.snapshot(for: .dark()), named: "ASYNC_IMAGE_PHASE_VIEW_LOADING_LAYOUT_DARK")
     }
+    
+    func test_layout_retry() {
+        let sut = AsyncImagePhaseView(phase: .failure(anyNSError()))
+        
+        assert(snapshot: sut.snapshot(for: .light()), named: "ASYNC_IMAGE_PHASE_VIEW_RETRY_LAYOUT_LIGHT")
+        assert(snapshot: sut.snapshot(for: .dark()), named: "ASYNC_IMAGE_PHASE_VIEW_RETRY_LAYOUT_DARK")
+    }
 }

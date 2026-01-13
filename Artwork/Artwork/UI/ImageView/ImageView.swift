@@ -21,10 +21,31 @@ public struct AsyncImagePhaseView: View {
         case .success:
             EmptyView()
         case .failure:
-            EmptyView()
+            retryView
         @unknown default:
             ProgressView()
         }
+    }
+    
+    private var retryView: some View {
+        Button {
+            
+        } label: {
+            ZStack {
+                Color.red.opacity(0.3)
+                
+                VStack(alignment: .center, spacing: 8) {
+                    Image(systemName: "arrow.trianglehead.clockwise")
+                        .font(.title)
+                        .foregroundStyle(Color.white)
+                    
+                    Text("Retry")
+                        .font(.title)
+                        .foregroundStyle(Color.white)
+                }
+            }
+        }
+
     }
 }
 

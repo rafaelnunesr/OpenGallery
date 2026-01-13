@@ -18,8 +18,7 @@ final class ArtworkListViewTests: XCTestCase {
     // MARK: - Helpers
     
     private func makeSUT() -> ArtworkListView<ArtworkListViewModelStub> {
-        let imageResult = ImageResult.failure
-        let data = ArtworkListViewData(list: [(ArtworkCardViewModel.model1, imageResult) , (ArtworkCardViewModel.model2, imageResult)])
+        let data = ArtworkListViewData(list: [ArtworkCardViewModel.model1, ArtworkCardViewModel.model2])
         let viewModel = ArtworkListViewModelStub(data: data)
         return ArtworkListView(viewModel: viewModel)
     }

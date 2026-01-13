@@ -17,8 +17,8 @@ public struct ArtworkListView<ViewModel: ArtworkListViewModelProtocol>: View {
     public var body: some View {
         ScrollView {
             LazyVStack(spacing: 16) {
-                ForEach(viewModel.data.list, id: \.model.id) { model in
-                    ArtworkCardView(model: model.model, image: Color.red)
+                ForEach(viewModel.data.list) { model in
+                    ArtworkCardView(model: model)
                 }
             }
         }
@@ -27,6 +27,8 @@ public struct ArtworkListView<ViewModel: ArtworkListViewModelProtocol>: View {
 }
 
 #Preview {
+    let anyURL = URL(string: "https://any-url.com")!
+    
     let model1 = ArtworkCardViewModel(
         id: "id_1",
         title: "A title",
@@ -34,7 +36,8 @@ public struct ArtworkListView<ViewModel: ArtworkListViewModelProtocol>: View {
         description: "Some description",
         dimensions: "some dimension",
         placeOfOrigin: "some place",
-        artist: "An artist"
+        artist: "An artist",
+        imageURL: anyURL
     )
     
     let model2 = ArtworkCardViewModel(
@@ -44,12 +47,13 @@ public struct ArtworkListView<ViewModel: ArtworkListViewModelProtocol>: View {
         description: "Another description",
         dimensions: "another dimension",
         placeOfOrigin: "another place",
-        artist: "Another artist"
+        artist: "Another artist",
+        imageURL: anyURL
     )
     
     let imageResult = ImageResult.failure
     
-    let data = ArtworkListViewData(list: [(model1, imageResult) , (model2, imageResult)])
+    let data = ArtworkListViewData(list: [model1, model2])
     NavigationStack {
         ArtworkListView(viewModel: ArtworkListViewModel(data: data))
     }

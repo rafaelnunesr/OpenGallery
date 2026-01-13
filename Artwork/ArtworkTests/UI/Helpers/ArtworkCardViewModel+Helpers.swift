@@ -15,7 +15,8 @@ extension ArtworkCardViewModel {
         description: "Some description",
         dimensions: "some dimension",
         placeOfOrigin: "some place",
-        artist: "An artist"
+        artist: "An artist",
+        imageURL: anyURL()
     )
     
     static let model2 = ArtworkCardViewModel(
@@ -25,6 +26,7 @@ extension ArtworkCardViewModel {
         description: "Another description",
         dimensions: "another dimension",
         placeOfOrigin: "another place",
-        artist: "Another artist"
+        artist: "Another artist",
+        imageURL: anyURL()
     )
 }

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1B112B1C2F16C08D00DF359C /* ViewInspector in Frameworks */ = {isa = PBXBuildFile; productRef = 1B112B1B2F16C08D00DF359C /* ViewInspector */; };
 		1BA25CE32F06C1C70009937F /* Artwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1BBBF85F2F005F5B00BA192C /* Artwork.framework */; platformFilters = (ios, macos, ); };
 		1BBBF8712F005FF600BA192C /* Artwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1BBBF85F2F005F5B00BA192C /* Artwork.framework */; };
 /* End PBXBuildFile section */
@@ -88,6 +89,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1BBBF8712F005FF600BA192C /* Artwork.framework in Frameworks */,
+				1B112B1C2F16C08D00DF359C /* ViewInspector in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -193,6 +195,7 @@
 			);
 			name = ArtworkTests;
 			packageProductDependencies = (
+				1B112B1B2F16C08D00DF359C /* ViewInspector */,
 			);
 			productName = FeedTests;
 			productReference = 1BBBF86D2F005FF600BA192C /* ArtworkTests.xctest */;
@@ -228,6 +231,9 @@
 			);
 			mainGroup = 1BBBF8552F005F5B00BA192C;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				1B112B1A2F16C08D00DF359C /* XCRemoteSwiftPackageReference "ViewInspector" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 1BBBF8602F005F5B00BA192C /* Products */;
 			projectDirPath = "";
@@ -671,6 +677,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		1B112B1A2F16C08D00DF359C /* XCRemoteSwiftPackageReference "ViewInspector" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/nalexn/ViewInspector";
+			requirement = {
+				kind = exactVersion;
+				version = 0.10.3;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		1B112B1B2F16C08D00DF359C /* ViewInspector */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1B112B1A2F16C08D00DF359C /* XCRemoteSwiftPackageReference "ViewInspector" */;
+			productName = ViewInspector;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 1BBBF8562F005F5B00BA192C /* Project object */;
 }

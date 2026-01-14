@@ -5,21 +5,6 @@
 //  Created by Rafael Rios on 14/01/26.
 //
 
-import Combine
-
-public protocol ResourceViewState: ObservableObject {
-    associatedtype ResourceValue
-    var value: ResourceValue { get set }
-}
-
-public protocol LoadingViewState: ObservableObject {
-    var isLoading: Bool { get set }
-}
-
-public protocol ErrorViewState: ObservableObject {
-    var errorMessage: String? { get set }
-}
-
 public class LoadResourcePresenter<Resource, View: ResourceViewState> {
     public typealias Mapper = (Resource) throws -> View.ResourceValue
     

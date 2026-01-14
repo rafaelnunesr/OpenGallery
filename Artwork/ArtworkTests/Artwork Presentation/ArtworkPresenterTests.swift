@@ -60,7 +60,7 @@ class LoadResourcePresenter<Resource, View: ResourceViewState> {
     
     func didFinishLoading(with error: Error) {
         loadingViewState.isLoading = false
-        errorViewState.errorMessage = error.localizedDescription
+        errorViewState.errorMessage = "GENERIC ERROR VALUE"
     }
 }
 
@@ -77,7 +77,6 @@ struct ArtworkPresenterTests {
     func didStartLoading_displaysNoErrorMessageAndStartsLoading() {
         let (sut, viewState) = makeSUT()
         
-        
         sut.didStartLoading()
         
         #expect(viewState.messages == [.loading(true), .error(nil)])
@@ -92,6 +91,15 @@ struct ArtworkPresenterTests {
         sut.didFinishLoading(with: "resource")
         
         #expect(viewState.messages == [.resource("resource view model"), .loading(false), .error(nil)])
+    }
+    
+    @Test
+    func didFinishLoadingWithError_displaysLocalizedErrorMessageAndStopsLoading() {
+        let (sut, viewState) = makeSUT()
+        
+        sut.didFinishLoading(with: anyNSError())
+        
+        #expect(viewState.messages == [.error("GENERIC ERROR VALUE"), .loading(false)])
     }
     
     // MARK: - Helpers

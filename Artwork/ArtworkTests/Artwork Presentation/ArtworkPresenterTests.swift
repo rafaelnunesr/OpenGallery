@@ -102,6 +102,17 @@ struct ArtworkPresenterTests {
         #expect(viewState.messages == [.error("GENERIC ERROR VALUE"), .loading(false)])
     }
     
+    @Test
+    func didFinishLoadingWithMapperError_displaysLocalizedErrorMessageAndStopsLoading() {
+        let (sut, viewState) = makeSUT(mapper: { resource in
+            throw anyNSError()
+        })
+        
+        sut.didFinishLoading(with: anyNSError())
+        
+        #expect(viewState.messages == [.error("GENERIC ERROR VALUE"), .loading(false)])
+    }
+    
     // MARK: - Helpers
     
     private typealias SUT = LoadResourcePresenter<String, ViewStateSpy>

@@ -16,13 +16,15 @@ final class RemoteArtworkLoaderTests {
         sutTracker?.verify()
     }
     
-    @Test func init_doesNotRequestDataFromURL() {
+    @Test
+    func init_doesNotRequestDataFromURL() {
         let client = makeSUT().client
         
         #expect(client.requestedURLs.isEmpty)
     }
     
-    @Test func load_requestsDataFromURL() {
+    @Test
+    func load_requestsDataFromURL() {
         let url = anyURL()
         let (sut, client) = makeSUT(url: url)
         
@@ -31,7 +33,8 @@ final class RemoteArtworkLoaderTests {
         #expect(client.requestedURLs == [url])
     }
     
-    @Test func loadTwice_requestsDataFromURLTwice() {
+    @Test
+    func loadTwice_requestsDataFromURLTwice() {
         let url = anyURL()
         let (sut, client) = makeSUT(url: url)
         
@@ -41,7 +44,8 @@ final class RemoteArtworkLoaderTests {
         #expect(client.requestedURLs == [url, url])
     }
     
-    @Test func load_deliversErrorOnClientError() {
+    @Test
+    func load_deliversErrorOnClientError() {
         let (sut, client) = makeSUT()
         
         let capturedResults = capturedResults(sut) {

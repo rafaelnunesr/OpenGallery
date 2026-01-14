@@ -14,7 +14,8 @@ final class ArtworkAPIEndToEndTests {
     private var clientTracker: MemoryLeakTracker<URLSessionHTTPClient>?
     private var loaderTracker: MemoryLeakTracker<RemoteArtworkLoader>?
 
-    @Test func endToEndTestServerGETArtworkResult() async {
+    @Test
+    func endToEndTestServerGETArtworkResult() async {
         let receivedResult = await getArtworkResult()
         
         guard case let .success(items) = receivedResult else {

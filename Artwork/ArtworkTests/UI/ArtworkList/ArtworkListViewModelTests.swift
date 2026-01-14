@@ -9,6 +9,7 @@ import Testing
 import Artwork
 
 struct ArtworkListViewModelTests {
+    
     @Test
     func request_dataWhenLoaded() {
         let loader = ArtworkLoaderSpy()

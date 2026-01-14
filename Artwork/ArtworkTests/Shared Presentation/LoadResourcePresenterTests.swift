@@ -1,5 +1,5 @@
 //
-//  ArtworkPresenterTests.swift
+//  LoadResourcePresenterTests.swift
 //  Artwork
 //
 //  Created by Rafael Rios on 14/01/26.
@@ -64,7 +64,7 @@ class LoadResourcePresenter<Resource, View: ResourceViewState> {
     }
 }
 
-struct ArtworkPresenterTests {
+struct LoadResourcePresenterTests {
     
     @Test
     func init_doesNotSendMessagesToView() {

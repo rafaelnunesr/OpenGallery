@@ -17,10 +17,19 @@ public protocol ArtworkListViewModelProtocol {
     var data: ArtworkListViewData { get set }
 }
 
-class ArtworkListViewModel: ArtworkListViewModelProtocol {
-    var data: ArtworkListViewData
+public class ArtworkListViewModel: ArtworkListViewModelProtocol {
+    public var data: ArtworkListViewData
+    private let loader: any ArtworkLoader
     
-    init(data: ArtworkListViewData = ArtworkListViewData(list: [])) {
-        self.data = data
+    public init(loader: any ArtworkLoader) {
+        self.loader = loader
+        
+        data = .init(list: [])
+        
+        fetchArtworkData()
+    }
+    
+    private func fetchArtworkData() {
+        loader.load { _ in }
     }
 }

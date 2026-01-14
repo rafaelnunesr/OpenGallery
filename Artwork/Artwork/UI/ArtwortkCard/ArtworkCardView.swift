@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-public struct ArtworkCardViewModel: Identifiable {
+public struct ArtworkCardViewModel: Identifiable, Equatable, Hashable {
     public let id: String
     let title: String
     let date: String

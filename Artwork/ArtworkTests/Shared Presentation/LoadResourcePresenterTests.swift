@@ -6,63 +6,8 @@
 //
 
 import Testing
-import SwiftUI
 import Artwork
 import Combine
-
-protocol ResourceViewState: ObservableObject {
-    associatedtype ResourceValue
-    var value: ResourceValue { get set }
-}
-
-protocol LoadingViewState: ObservableObject {
-    var isLoading: Bool { get set }
-}
-
-protocol ErrorViewState: ObservableObject {
-    var errorMessage: String? { get set }
-}
-
-class LoadResourcePresenter<Resource, View: ResourceViewState> {
-    typealias Mapper = (Resource) throws -> View.ResourceValue
-    
-    private var resourceViewState: View
-    private let loadingViewState: any LoadingViewState
-    private let errorViewState: any ErrorViewState
-    private let mapper: Mapper
-    
-    init(
-        resourceViewState: View,
-        loadingViewState: any LoadingViewState,
-        errorViewState: any ErrorViewState,
-        mapper: @escaping Mapper
-    ) {
-        self.resourceViewState = resourceViewState
-        self.loadingViewState = loadingViewState
-        self.errorViewState = errorViewState
-        self.mapper = mapper
-    }
-    
-    func didStartLoading() {
-        loadingViewState.isLoading = true
-        errorViewState.errorMessage = nil
-    }
-    
-    func didFinishLoading(with resource: Resource) {
-        do {
-            resourceViewState.value = try mapper(resource)
-            loadingViewState.isLoading = false
-            errorViewState.errorMessage = nil
-        } catch {
-            didFinishLoading(with: error)
-        }
-    }
-    
-    func didFinishLoading(with error: Error) {
-        loadingViewState.isLoading = false
-        errorViewState.errorMessage = "GENERIC ERROR VALUE"
-    }
-}
 
 struct LoadResourcePresenterTests {
     

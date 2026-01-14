@@ -10,8 +10,9 @@ import SwiftUI
 import Artwork
 import Combine
 
-protocol ArtworkListViewState: ObservableObject {
-    var list: [ArtworkCardViewModel] { get set }
+protocol ResourceViewState: ObservableObject {
+    associatedtype ResourceValue
+    var value: ResourceValue { get set }
 }
 
 protocol LoadingViewState: ObservableObject {
@@ -22,24 +23,44 @@ protocol ErrorViewState: ObservableObject {
     var errorMessage: String? { get set }
 }
 
-class ArtworkPresenter {
-    private let resourceViewState: any ArtworkListViewState
+class LoadResourcePresenter<Resource, View: ResourceViewState> {
+    typealias Mapper = (Resource) throws -> View.ResourceValue
+    
+    private var resourceViewState: View
     private let loadingViewState: any LoadingViewState
     private let errorViewState: any ErrorViewState
+    private let mapper: Mapper
     
     init(
-        resourceViewState: any ArtworkListViewState,
+        resourceViewState: View,
         loadingViewState: any LoadingViewState,
         errorViewState: any ErrorViewState,
+        mapper: @escaping Mapper
     ) {
         self.resourceViewState = resourceViewState
         self.loadingViewState = loadingViewState
         self.errorViewState = errorViewState
+        self.mapper = mapper
     }
     
     func didStartLoading() {
         loadingViewState.isLoading = true
         errorViewState.errorMessage = nil
+    }
+    
+    func didFinishLoading(with resource: Resource) {
+        do {
+            resourceViewState.value = try mapper(resource)
+            loadingViewState.isLoading = false
+            errorViewState.errorMessage = nil
+        } catch {
+            didFinishLoading(with: error)
+        }
+    }
+    
+    func didFinishLoading(with error: Error) {
+        loadingViewState.isLoading = false
+        errorViewState.errorMessage = error.localizedDescription
     }
 }
 
@@ -56,31 +77,44 @@ struct ArtworkPresenterTests {
     func didStartLoading_displaysNoErrorMessageAndStartsLoading() {
         let (sut, viewState) = makeSUT()
         
+        
         sut.didStartLoading()
         
         #expect(viewState.messages == [.loading(true), .error(nil)])
     }
     
-    // MARK: - Helpers
-    
-    private typealias SUT = (sut: ArtworkPresenter, viewState: ViewStateSpy)
-    
-    private func makeSUT() -> SUT {
-        let viewState = ViewStateSpy()
+    @Test
+    func didFinishLoadingResource_displaysResourceAndStopsLoading() {
+        let (sut, viewState) = makeSUT(mapper: { resource in
+            resource + " view model"
+        })
         
-        let sut = ArtworkPresenter(
-            resourceViewState: viewState,
-            loadingViewState: viewState,
-            errorViewState: viewState
-        )
+        sut.didFinishLoading(with: "resource")
         
-        return (sut, viewState)
+        #expect(viewState.messages == [.resource("resource view model"), .loading(false), .error(nil)])
     }
     
-    private class ViewStateSpy: ArtworkListViewState, LoadingViewState, ErrorViewState {
-        @Published var list = [ArtworkCardViewModel]() {
+    // MARK: - Helpers
+    
+    private typealias SUT = LoadResourcePresenter<String, ViewStateSpy>
+    
+    private func makeSUT(mapper: @escaping SUT.Mapper  = { _ in "any" }) -> (sut: SUT, viewState: ViewStateSpy) {
+        let viewState = ViewStateSpy()
+        
+        let sut = LoadResourcePresenter(
+            resourceViewState: viewState,
+            loadingViewState: viewState,
+            errorViewState: viewState,
+            mapper: mapper
+        )
+        
+        return (sut: sut, viewState: viewState)
+    }
+    
+    private class ViewStateSpy: ResourceViewState, LoadingViewState, ErrorViewState {
+        @Published var value: String = "" {
             didSet {
-                messages.insert(.list(list))
+                messages.insert(.resource(value))
             }
         }
         
@@ -97,7 +131,7 @@ struct ArtworkPresenterTests {
         }
         
         enum Message: Hashable {
-            case list([ArtworkCardViewModel])
+            case resource(String)
             case loading(Bool)
             case error(String?)
         }

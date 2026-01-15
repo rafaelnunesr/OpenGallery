@@ -65,7 +65,8 @@ public struct ArtworkCardView: View {
     private var imageView: some View {
         ImageView(url: model.imageURL)
             .aspectRatio(contentMode: .fit)
-            .frame(maxHeight: 400)
+            .frame(height: 400)
+            .background(Color.gray.opacity(0.2))
             .clipShape(RoundedRectangle(cornerRadius: 8))
     }
     
@@ -74,6 +75,7 @@ public struct ArtworkCardView: View {
             .font(.title2)
             .bold()
             .multilineTextAlignment(.leading)
+            .padding(.top, 16)
     }
     
     private var artistLabel: some View {

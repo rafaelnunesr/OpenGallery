@@ -18,6 +18,16 @@ struct ArtworkListViewStoreTests {
         #expect(!loader.messages.isEmpty)
     }
     
+    @Test
+    func test_whenLoaderReturnsError_stateShouldBeUpdatedCorrectly() {
+        let loader = ArtworkLoaderSpy()
+        let sut = ArtworkListViewStore(loader: loader)
+        
+        loader.completeWithError()
+        
+        #expect(sut.errorMessage == "GENERIC ERROR MESSAGE")
+    }
+    
     // MARK: - Helper
     
     private class ArtworkLoaderSpy: ArtworkLoader {
@@ -27,6 +37,10 @@ struct ArtworkListViewStoreTests {
         
         func load(completion: @escaping (LoadArtworkResult) -> Void) {
             messages.append(completion)
+        }
+        
+        func completeWithError(at index: Int = 0) {
+            messages[index](.failure(anyNSError()))
         }
     }
 }

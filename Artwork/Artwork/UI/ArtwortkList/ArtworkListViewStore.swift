@@ -28,7 +28,9 @@ public class ArtworkListViewStore: ArtworkListViewStoreProtocol {
     }
     
     private func fetchArtworkData() {
-        loader.load { _ in }
+        loader.load { [weak self] _ in
+            self?.errorMessage = "GENERIC ERROR MESSAGE"
+        }
     }
     
     public func reload() {}

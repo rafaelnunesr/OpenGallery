@@ -1,5 +1,5 @@
 //
-//  ArtworkListViewModelTests.swift
+//  ArtworkListViewStoreTests.swift
 //  Artwork
 //
 //  Created by Rafael Rios on 13/01/26.
@@ -8,7 +8,7 @@
 import Testing
 import Artwork
 
-struct ArtworkListViewModelTests {
+struct ArtworkListViewStoreTests {
     
     @Test
     func request_dataWhenLoaded() {

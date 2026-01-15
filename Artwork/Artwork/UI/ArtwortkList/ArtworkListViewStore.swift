@@ -1,5 +1,5 @@
 //
-//  ArtworkListViewModel.swift
+//  ArtworkListViewStore.swift
 //  Artwork
 //
 //  Created by Rafael Rios on 10/01/26.

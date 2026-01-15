@@ -7,17 +7,17 @@
 
 import SwiftUI
 
-public struct ArtworkListView<ViewModel: ArtworkListViewModelProtocol>: View {
-    private var viewModel: ViewModel
+public struct ArtworkListView<Store: ArtworkListViewStoreProtocol>: View {
+    private var store: Store
     
-    public init(viewModel: ViewModel) {
-        self.viewModel = viewModel
+    public init(store: Store) {
+        self.store = store
     }
     
     public var body: some View {
         ScrollView {
             LazyVStack(spacing: 16) {
-                ForEach(viewModel.data.list) { model in
+                ForEach(store.value) { model in
                     ArtworkCardView(model: model)
                 }
             }
@@ -28,6 +28,6 @@ public struct ArtworkListView<ViewModel: ArtworkListViewModelProtocol>: View {
 
 #Preview {
     NavigationStack {
-        ArtworkListView(viewModel: ArtworkListViewModel(loader: ArtworkLoaderDummy()))
+        ArtworkListView(store: ArtworkListViewStore(loader: ArtworkLoaderDummy()))
     }
 }

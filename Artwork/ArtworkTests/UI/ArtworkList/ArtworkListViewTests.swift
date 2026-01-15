@@ -5,6 +5,7 @@
 //  Created by Rafael Rios on 10/01/26.
 //
 
+import Combine
 import XCTest
 import Artwork
 
@@ -17,17 +18,18 @@ final class ArtworkListViewTests: XCTestCase {
     
     // MARK: - Helpers
     
-    private func makeSUT() -> ArtworkListView<ArtworkListViewModelStub> {
-        let data = ArtworkListViewData(list: [ArtworkCardViewModel.model1, ArtworkCardViewModel.model2])
-        let viewModel = ArtworkListViewModelStub(data: data)
-        return ArtworkListView(viewModel: viewModel)
+    private func makeSUT() -> ArtworkListView<ArtworkListViewStoreStub> {
+        let store = ArtworkListViewStoreStub(value: [ArtworkCardViewModel.model1, ArtworkCardViewModel.model2])
+        return ArtworkListView(store: store)
     }
     
-    private class ArtworkListViewModelStub: ArtworkListViewModelProtocol {
-        var data: ArtworkListViewData
+    private class ArtworkListViewStoreStub: ArtworkListViewStoreProtocol {
+        @Published var value = [ArtworkCardViewModel]()
+        @Published var isLoading = false
+        @Published var errorMessage: String? = nil
         
-        init(data: ArtworkListViewData) {
-            self.data = data
+        init(value: [ArtworkCardViewModel]) {
+            self.value = value
         }
     }
 }

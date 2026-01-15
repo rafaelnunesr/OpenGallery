@@ -10,26 +10,25 @@ import XCTest
 import Artwork
 
 final class ArtworkListViewTests: XCTestCase {
-    func test_layout() {
-        let sut = makeSUT()
-        assert(snapshot: sut.snapshot(for: .light()), named: "ARTWORK_LIST_VIEW_LAYOUT_LIGHT")
-        assert(snapshot: sut.snapshot(for: .dark()), named: "ARTWORK_LIST_VIEW_LAYOUT_DARK")
+    func test_layout_idle() {
+        let store = ArtworkListViewStoreStub(value: [ArtworkCardViewModel.model1, ArtworkCardViewModel.model2])
+        let sut = ArtworkListView(store: store)
+        
+        assert(snapshot: sut.snapshot(for: .light()), named: "ARTWORK_LIST_VIEW_LAYOUT_IDLE_LIGHT")
+        assert(snapshot: sut.snapshot(for: .dark()), named: "ARTWORK_LIST_VIEW_LAYOUT_IDLE_DARK")
     }
     
     // MARK: - Helpers
-    
-    private func makeSUT() -> ArtworkListView<ArtworkListViewStoreStub> {
-        let store = ArtworkListViewStoreStub(value: [ArtworkCardViewModel.model1, ArtworkCardViewModel.model2])
-        return ArtworkListView(store: store)
-    }
     
     private class ArtworkListViewStoreStub: ArtworkListViewStoreProtocol {
         @Published var value = [ArtworkCardViewModel]()
         @Published var isLoading = false
         @Published var errorMessage: String? = nil
         
-        init(value: [ArtworkCardViewModel]) {
+        init(value: [ArtworkCardViewModel] = [], isLoading: Bool = false, errorMessage: String? = nil) {
             self.value = value
+            self.isLoading = isLoading
+            self.errorMessage = errorMessage
         }
     }
 }

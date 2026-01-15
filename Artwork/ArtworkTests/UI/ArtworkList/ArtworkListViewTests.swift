@@ -12,32 +12,28 @@ import ViewInspector
 
 final class ArtworkListViewTests: XCTestCase {
     func test_layout_idle() {
-        let store = ArtworkListViewStoreStub(value: [ArtworkCardViewModel.model1, ArtworkCardViewModel.model2])
-        let sut = ArtworkListView(store: store)
+        let sut = makeSUT().sut
         
         assert(snapshot: sut.snapshot(for: .light()), named: "ARTWORK_LIST_VIEW_LAYOUT_IDLE_LIGHT")
         assert(snapshot: sut.snapshot(for: .dark()), named: "ARTWORK_LIST_VIEW_LAYOUT_IDLE_DARK")
     }
     
     func test_layout_loading() {
-        let store = ArtworkListViewStoreStub(value: [ArtworkCardViewModel.model1, ArtworkCardViewModel.model2], isLoading: true)
-        let sut = ArtworkListView(store: store)
+        let sut = makeSUT(isLoading: true).sut
         
         assert(snapshot: sut.snapshot(for: .light()), named: "ARTWORK_LIST_VIEW_LAYOUT_LOADING_LIGHT")
         assert(snapshot: sut.snapshot(for: .dark()), named: "ARTWORK_LIST_VIEW_LAYOUT_LOADING_DARK")
     }
     
     func test_layout_error() {
-        let store = ArtworkListViewStoreStub(value: [ArtworkCardViewModel.model1, ArtworkCardViewModel.model2], errorMessage: "GENERIC ERROR MESSAGE")
-        let sut = ArtworkListView(store: store)
+        let sut = makeSUT(hasError: true).sut
         
         assert(snapshot: sut.snapshot(for: .light()), named: "ARTWORK_LIST_VIEW_LAYOUT_ERROR_LIGHT")
         assert(snapshot: sut.snapshot(for: .dark()), named: "ARTWORK_LIST_VIEW_LAYOUT_ERROR_DARK")
     }
     
     func test_when_retryButtonIsTapped_reloadShouldBeTriggered() throws {
-        let store = ArtworkListViewStoreStub(errorMessage: "GENERIC ERROR MESSAGE")
-        let sut = ArtworkListView(store: store)
+        let (sut, store) = makeSUT(hasError: true)
         
         let retryButton = try sut.inspect().find(ViewType.Button.self, where: {
             try $0.accessibilityIdentifier() == ArtworkListViewIds.retryButton
@@ -49,6 +45,19 @@ final class ArtworkListViewTests: XCTestCase {
     }
     
     // MARK: - Helpers
+    private typealias SUT = (sut: ArtworkListView<ArtworkListViewStoreStub>, store: ArtworkListViewStoreStub)
+    
+    private func makeSUT(isLoading: Bool = false, hasError: Bool = false) -> SUT {
+        let store = ArtworkListViewStoreStub(
+            value: [ArtworkCardViewModel.model1, ArtworkCardViewModel.model2],
+            isLoading: isLoading,
+            errorMessage: hasError ? "GENERIC ERROR MESSAGE" : nil
+        )
+        
+        let sut = ArtworkListView(store: store)
+        
+        return (sut, store)
+    }
     
     private class ArtworkListViewStoreStub: ArtworkListViewStoreProtocol {
         @Published var value = [ArtworkCardViewModel]()

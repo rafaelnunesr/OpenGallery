@@ -32,6 +32,7 @@ public class ArtworkListViewStore: ArtworkListViewStoreProtocol {
         
         loader.load { [weak self] _ in
             self?.errorMessage = "GENERIC ERROR MESSAGE"
+            self?.isLoading = false
         }
     }
     

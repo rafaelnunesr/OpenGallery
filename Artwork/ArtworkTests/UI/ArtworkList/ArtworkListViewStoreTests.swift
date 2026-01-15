@@ -33,6 +33,7 @@ struct ArtworkListViewStoreTests {
         loader.completeWithError()
         
         #expect(sut.errorMessage == "GENERIC ERROR MESSAGE")
+        #expect(!sut.isLoading)
     }
     
     // MARK: - Helper

@@ -8,10 +8,10 @@
 import SwiftUI
 
 public struct ArtworkListView<Store: ArtworkListViewStoreProtocol>: View {
-    private var store: Store
+    @ObservedObject private var store: Store
     
     public init(store: Store) {
-        self.store = store
+        _store = ObservedObject(wrappedValue: store)
     }
     
     public var body: some View {
@@ -60,7 +60,7 @@ public struct ArtworkListView<Store: ArtworkListViewStoreProtocol>: View {
     private var retryButton: some View {
         if store.errorMessage != nil {
             Button {
-                
+                store.reload()
             } label: {
                 VStack(alignment: .center, spacing: 8) {
                     Image(systemName: "arrow.trianglehead.clockwise")
@@ -75,8 +75,13 @@ public struct ArtworkListView<Store: ArtworkListViewStoreProtocol>: View {
             .padding()
             .background(Color.red.opacity(0.3))
             .clipShape(RoundedRectangle(cornerRadius: 8))
+            .accessibilityIdentifier(ArtworkListViewIds.retryButton)
         }
     }
+}
+
+public enum ArtworkListViewIds {
+    public static let retryButton = "retry_button"
 }
 
 #Preview {

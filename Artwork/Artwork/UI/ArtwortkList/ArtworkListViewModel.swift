@@ -11,6 +11,7 @@ public protocol ArtworkListViewStoreProtocol: ResourceViewState, LoadingViewStat
     var value: [ArtworkCardViewModel] { get }
     var isLoading: Bool { get set }
     var errorMessage: String? { get set }
+    func reload()
 }
 
 public class ArtworkListViewStore: ArtworkListViewStoreProtocol {
@@ -29,4 +30,6 @@ public class ArtworkListViewStore: ArtworkListViewStoreProtocol {
     private func fetchArtworkData() {
         loader.load { _ in }
     }
+    
+    public func reload() {}
 }

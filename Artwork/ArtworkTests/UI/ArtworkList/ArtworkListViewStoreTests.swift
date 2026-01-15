@@ -36,6 +36,18 @@ struct ArtworkListViewStoreTests {
         #expect(!sut.isLoading)
     }
     
+    @Test
+    func test_whenLoaderReturnsSuccess_stateShouldBeUpdatedCorrectly() {
+        let loader = ArtworkLoaderSpy()
+        let sut = ArtworkListViewStore(loader: loader)
+        
+        loader.completeWithSuccess()
+        
+        #expect(!sut.value.isEmpty)
+        #expect(sut.errorMessage == nil)
+        #expect(!sut.isLoading)
+    }
+    
     // MARK: - Helper
     
     private class ArtworkLoaderSpy: ArtworkLoader {
@@ -49,6 +61,10 @@ struct ArtworkListViewStoreTests {
         
         func completeWithError(at index: Int = 0) {
             messages[index](.failure(anyNSError()))
+        }
+        
+        func completeWithSuccess(at index: Int = 0) {
+            messages[index](.success([ArtworkItem.makeItem1().item]))
         }
     }
 }

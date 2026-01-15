@@ -10,28 +10,33 @@ import SwiftUI
 public struct ArtworkCardViewModel: Identifiable, Equatable, Hashable {
     public let id: String
     let title: String
-    let date: String
-    let description: String
+    let date: String?
+    let description: String?
     let dimensions: String
-    let placeOfOrigin: String
-    let artist: String
+    let placeOfOrigin: String?
+    let artist: String?
     let imageURL: URL
     
     var detailsView: String {
-        placeOfOrigin + " - " + date + " - " + dimensions
+        guard let placeOfOrigin, let date else {
+            return dimensions
+        }
+        
+        return placeOfOrigin + " - " + date + " - " + dimensions
     }
     
     var artistInfo: String {
-        "by " + artist
+        guard let artist else { return "Unknown Artist" }
+        return "by " + artist
     }
     
     public init(id: String,
                 title: String,
-                date: String,
-                description: String,
+                date: String?,
+                description: String?,
                 dimensions: String,
-                placeOfOrigin: String,
-                artist: String,
+                placeOfOrigin: String?,
+                artist: String?,
                 imageURL: URL) {
         self.id = id
         self.title = title
@@ -78,16 +83,22 @@ public struct ArtworkCardView: View {
             .padding(.top, 16)
     }
     
+    @ViewBuilder
     private var artistLabel: some View {
-        Text(model.artist)
-            .font(.caption)
-            .foregroundStyle(.secondary)
+        if let artist = model.artist {
+            Text(artist)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
     }
     
+    @ViewBuilder
     private var descriptionLabel: some View {
-        Text(model.description)
-            .font(.body)
-            .multilineTextAlignment(.leading)
+        if let description = model.description {
+            Text(description)
+                .font(.body)
+                .multilineTextAlignment(.leading)
+        }
     }
     
     private var detailsView: some View {

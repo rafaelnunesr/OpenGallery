@@ -5,6 +5,7 @@
 //  Created by Rafael Rios on 10/01/26.
 //
 
+import Foundation
 import Combine
 
 public protocol ArtworkListViewStoreProtocol: ResourceViewState, LoadingViewState, ErrorViewState {
@@ -30,11 +31,32 @@ public class ArtworkListViewStore: ArtworkListViewStoreProtocol {
     private func fetchArtworkData() {
         isLoading = true
         
-        loader.load { [weak self] _ in
-            self?.errorMessage = "GENERIC ERROR MESSAGE"
+        loader.load { [weak self] result in
+            switch result {
+            case .failure:
+                self?.errorMessage = "GENERIC ERROR MESSAGE"
+            case let .success(models):
+                self?.value = models.map { ArtworkCardViewModel.map(from: $0) }
+            }
+            
             self?.isLoading = false
         }
     }
     
     public func reload() {}
+}
+
+extension ArtworkCardViewModel {
+    static func map(from item: ArtworkItem) -> Self {
+        ArtworkCardViewModel(
+            id: String(item.id),
+            title: item.title,
+            date: item.dateDisplay,
+            description: item.description,
+            dimensions: "",
+            placeOfOrigin: item.placeOfOrigin,
+            artist: item.artistTitle,
+            imageURL: URL(string: "https://any-url.com")!
+        )
+    }
 }

@@ -19,6 +19,13 @@ struct ArtworkListViewStoreTests {
     }
     
     @Test
+    func init_setIsLoadingAsTrue() {
+        let sut = ArtworkListViewStore(loader: ArtworkLoaderSpy())
+        
+        #expect(sut.isLoading)
+    }
+    
+    @Test
     func test_whenLoaderReturnsError_stateShouldBeUpdatedCorrectly() {
         let loader = ArtworkLoaderSpy()
         let sut = ArtworkListViewStore(loader: loader)

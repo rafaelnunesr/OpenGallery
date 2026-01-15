@@ -28,6 +28,8 @@ public class ArtworkListViewStore: ArtworkListViewStoreProtocol {
     }
     
     private func fetchArtworkData() {
+        isLoading = true
+        
         loader.load { [weak self] _ in
             self?.errorMessage = "GENERIC ERROR MESSAGE"
         }

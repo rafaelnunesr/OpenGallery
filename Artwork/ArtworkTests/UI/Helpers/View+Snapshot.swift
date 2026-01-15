@@ -10,18 +10,24 @@ import SwiftUI
 
 extension View {
     func snapshot(for configuration: SnapshotConfiguration) -> NSImage {
+        let backgroundColor: Color =
+        configuration.colorScheme == .dark ? .black : .white
+        
         let hostingView = NSHostingView(
-            rootView: self.environment(\.colorScheme, configuration.colorScheme)
+            rootView:
+                self
+                .background(backgroundColor)
+                .environment(\.colorScheme, configuration.colorScheme)
         )
-
+        
         hostingView.frame = NSRect(origin: .zero, size: configuration.size)
         hostingView.appearance = configuration.appearance
-
+        
         let window = SnapshotWindow(
             configuration: configuration,
             rootView: hostingView
         )
-
+        
         return window.snapshot()
     }
 }

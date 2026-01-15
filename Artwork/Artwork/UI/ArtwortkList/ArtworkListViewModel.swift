@@ -5,26 +5,24 @@
 //  Created by Rafael Rios on 10/01/26.
 //
 
-public struct ArtworkListViewData {
-    let list: [ArtworkCardViewModel]
+import Combine
+
+public protocol ArtworkListViewStoreProtocol: ResourceViewState, LoadingViewState, ErrorViewState {
+    var value: [ArtworkCardViewModel] { get }
+    var isLoading: Bool { get set }
+    var errorMessage: String? { get set }
+    func reload()
+}
+
+public class ArtworkListViewStore: ArtworkListViewStoreProtocol {
+    @Published public var value = [ArtworkCardViewModel]()
+    @Published public var isLoading = false
+    @Published public var errorMessage: String? = nil
     
-    public init(list: [ArtworkCardViewModel]) {
-        self.list = list
-    }
-}
-
-public protocol ArtworkListViewModelProtocol {
-    var data: ArtworkListViewData { get set }
-}
-
-public class ArtworkListViewModel: ArtworkListViewModelProtocol {
-    public var data: ArtworkListViewData
     private let loader: any ArtworkLoader
     
     public init(loader: any ArtworkLoader) {
         self.loader = loader
-        
-        data = .init(list: [])
         
         fetchArtworkData()
     }
@@ -32,4 +30,6 @@ public class ArtworkListViewModel: ArtworkListViewModelProtocol {
     private func fetchArtworkData() {
         loader.load { _ in }
     }
+    
+    public func reload() {}
 }

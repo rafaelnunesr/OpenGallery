@@ -7,27 +7,85 @@
 
 import SwiftUI
 
-public struct ArtworkListView<ViewModel: ArtworkListViewModelProtocol>: View {
-    private var viewModel: ViewModel
+public struct ArtworkListView<Store: ArtworkListViewStoreProtocol>: View {
+    @ObservedObject private var store: Store
     
-    public init(viewModel: ViewModel) {
-        self.viewModel = viewModel
+    public init(store: Store) {
+        _store = ObservedObject(wrappedValue: store)
     }
     
     public var body: some View {
+        VStack(alignment: .center, spacing: 8) {
+            errorView
+            contentView
+            loadingView
+            retryButton
+        }
+        .navigationTitle("Artworks")
+    }
+    
+    private var contentView: some View {
         ScrollView {
             LazyVStack(spacing: 16) {
-                ForEach(viewModel.data.list) { model in
+                ForEach(store.value) { model in
                     ArtworkCardView(model: model)
                 }
             }
         }
-        .navigationTitle("Artworks")
     }
+    
+    @ViewBuilder
+    private var loadingView: some View {
+        if store.isLoading {
+            ProgressView()
+        }
+    }
+    
+    @ViewBuilder
+    private var errorView: some View {
+        if let message = store.errorMessage {
+            Rectangle()
+                .frame(height: 52)
+                .foregroundStyle(.red)
+                .overlay {
+                    Text(message)
+                        .font(.body)
+                        .fontWeight(.heavy)
+                        .foregroundStyle(.white)
+                }
+        }
+    }
+    
+    @ViewBuilder
+    private var retryButton: some View {
+        if store.errorMessage != nil {
+            Button {
+                store.reload()
+            } label: {
+                VStack(alignment: .center, spacing: 8) {
+                    Image(systemName: "arrow.trianglehead.clockwise")
+                        .font(.title)
+                        .foregroundStyle(Color.white)
+                    
+                    Text("Retry")
+                        .font(.title)
+                        .foregroundStyle(Color.white)
+                }
+            }
+            .padding()
+            .background(Color.red.opacity(0.3))
+            .clipShape(RoundedRectangle(cornerRadius: 8))
+            .accessibilityIdentifier(ArtworkListViewIds.retryButton)
+        }
+    }
+}
+
+public enum ArtworkListViewIds {
+    public static let retryButton = "retry_button"
 }
 
 #Preview {
     NavigationStack {
-        ArtworkListView(viewModel: ArtworkListViewModel(loader: ArtworkLoaderDummy()))
+        ArtworkListView(store: ArtworkListViewStore(loader: ArtworkLoaderDummy()))
     }
 }

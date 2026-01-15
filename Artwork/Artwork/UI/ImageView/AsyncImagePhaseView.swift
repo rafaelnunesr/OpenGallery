@@ -51,7 +51,11 @@ public struct AsyncImagePhaseView: View {
     }
     
     private var progressView: some View {
-        ProgressView()
+        HStack {
+            Spacer()
+            ProgressView()
+            Spacer()
+        }
     }
     
     public enum AccessibilityIds {

@@ -13,7 +13,7 @@ struct ArtworkListViewModelTests {
     @Test
     func request_dataWhenLoaded() {
         let loader = ArtworkLoaderSpy()
-        _ = ArtworkListViewModel(loader: loader)
+        _ = ArtworkListViewStore(loader: loader)
         
         #expect(!loader.messages.isEmpty)
     }

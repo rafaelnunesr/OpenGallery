@@ -11,12 +11,14 @@ import Artwork
 struct ArtworkListViewStoreTests {
     
     @Test
-    func request_dataWhenLoaded() {
+    func init_requestsData() {
         let loader = ArtworkLoaderSpy()
         _ = ArtworkListViewStore(loader: loader)
         
         #expect(!loader.messages.isEmpty)
     }
+    
+    // MARK: - Helper
     
     private class ArtworkLoaderSpy: ArtworkLoader {
         var messages = [((LoadArtworkResult) -> Void)]()

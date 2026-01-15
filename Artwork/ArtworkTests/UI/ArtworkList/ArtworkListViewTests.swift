@@ -18,6 +18,14 @@ final class ArtworkListViewTests: XCTestCase {
         assert(snapshot: sut.snapshot(for: .dark()), named: "ARTWORK_LIST_VIEW_LAYOUT_IDLE_DARK")
     }
     
+    func test_layout_loading() {
+        let store = ArtworkListViewStoreStub(value: [ArtworkCardViewModel.model1, ArtworkCardViewModel.model2], isLoading: true)
+        let sut = ArtworkListView(store: store)
+        
+        assert(snapshot: sut.snapshot(for: .light()), named: "ARTWORK_LIST_VIEW_LAYOUT_LOADING_LIGHT")
+        assert(snapshot: sut.snapshot(for: .dark()), named: "ARTWORK_LIST_VIEW_LAYOUT_LOADING_DARK")
+    }
+    
     // MARK: - Helpers
     
     private class ArtworkListViewStoreStub: ArtworkListViewStoreProtocol {

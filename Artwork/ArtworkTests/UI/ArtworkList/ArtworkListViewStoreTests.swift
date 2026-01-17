@@ -26,7 +26,7 @@ struct ArtworkListViewStoreTests {
     }
     
     @Test
-    func test_whenLoaderReturnsError_stateShouldBeUpdatedCorrectly() {
+    func whenLoaderReturnsError_stateShouldBeUpdatedCorrectly() {
         let loader = ArtworkLoaderSpy()
         let sut = ArtworkListViewStore(loader: loader)
         
@@ -37,7 +37,7 @@ struct ArtworkListViewStoreTests {
     }
     
     @Test
-    func test_whenLoaderReturnsSuccess_stateShouldBeUpdatedCorrectly() {
+    func whenLoaderReturnsSuccess_stateShouldBeUpdatedCorrectly() {
         let loader = ArtworkLoaderSpy()
         let sut = ArtworkListViewStore(loader: loader)
         
@@ -48,15 +48,37 @@ struct ArtworkListViewStoreTests {
         #expect(!sut.isLoading)
     }
     
+    @Test
+    func reload_triggersLoaderLoadMethod() {
+        let loader = ArtworkLoaderSpy()
+        let sut = ArtworkListViewStore(loader: loader)
+        
+        #expect(loader.methodInvocations == [.load])
+        
+        sut.reload()
+        
+        #expect(loader.methodInvocations == [.load, .load])
+        
+        sut.reload()
+        
+        #expect(loader.methodInvocations == [.load, .load, .load])
+    }
+    
     // MARK: - Helper
     
     private class ArtworkLoaderSpy: ArtworkLoader {
-        var messages = [((LoadArtworkResult) -> Void)]()
+        private(set) var messages = [((LoadArtworkResult) -> Void)]()
+        private(set) var methodInvocations = [MethodName]()
+        
+        enum MethodName {
+            case load
+        }
         
         enum Error: Swift.Error {}
         
         func load(completion: @escaping (LoadArtworkResult) -> Void) {
             messages.append(completion)
+            methodInvocations.append(.load)
         }
         
         func completeWithError(at index: Int = 0) {

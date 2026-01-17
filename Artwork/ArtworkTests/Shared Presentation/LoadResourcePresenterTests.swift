@@ -44,7 +44,7 @@ struct LoadResourcePresenterTests {
         
         sut.didFinishLoading(with: anyNSError())
         
-        #expect(viewState.messages == [.error("GENERIC ERROR VALUE"), .loading(false)])
+        #expect(viewState.messages == [.error(ErrorKey.genericError.string()), .loading(false)])
     }
     
     @Test
@@ -55,7 +55,7 @@ struct LoadResourcePresenterTests {
         
         sut.didFinishLoading(with: anyNSError())
         
-        #expect(viewState.messages == [.error("GENERIC ERROR VALUE"), .loading(false)])
+        #expect(viewState.messages == [.error(ErrorKey.genericError.string()), .loading(false)])
     }
     
     // MARK: - Helpers

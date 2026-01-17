@@ -26,7 +26,7 @@ struct ArtworkListViewStoreTests {
     }
     
     @Test
-    func test_whenLoaderReturnsError_stateShouldBeUpdatedCorrectly() {
+    func whenLoaderReturnsError_stateShouldBeUpdatedCorrectly() {
         let loader = ArtworkLoaderSpy()
         let sut = ArtworkListViewStore(loader: loader)
         
@@ -37,7 +37,7 @@ struct ArtworkListViewStoreTests {
     }
     
     @Test
-    func test_whenLoaderReturnsSuccess_stateShouldBeUpdatedCorrectly() {
+    func whenLoaderReturnsSuccess_stateShouldBeUpdatedCorrectly() {
         let loader = ArtworkLoaderSpy()
         let sut = ArtworkListViewStore(loader: loader)
         
@@ -49,7 +49,7 @@ struct ArtworkListViewStoreTests {
     }
     
     @Test
-    func test_reload_triggersLoaderLoadMethod() {
+    func reload_triggersLoaderLoadMethod() {
         let loader = ArtworkLoaderSpy()
         let sut = ArtworkListViewStore(loader: loader)
         

@@ -43,7 +43,9 @@ public class ArtworkListViewStore: ArtworkListViewStoreProtocol {
         }
     }
     
-    public func reload() {}
+    public func reload() {
+        fetchArtworkData()
+    }
 }
 
 extension ArtworkCardViewModel {

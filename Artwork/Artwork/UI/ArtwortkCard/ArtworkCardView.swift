@@ -71,7 +71,7 @@ public struct ArtworkCardView: View {
         ImageView(url: model.imageURL)
             .aspectRatio(contentMode: .fit)
             .frame(height: .fourHundred)
-            .background(Color.gray.opacity(0.2))
+            .background(Color.lightGray)
             .clipShape(RoundedRectangle(cornerRadius: .eight))
     }
     

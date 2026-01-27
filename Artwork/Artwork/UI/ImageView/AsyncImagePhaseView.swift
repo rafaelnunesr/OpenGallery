@@ -34,7 +34,7 @@ public struct AsyncImagePhaseView: View {
             retryAction()
         } label: {
             ZStack {
-                Color.red.opacity(0.3)
+                Color.lightRed
                 
                 VStack(alignment: .center, spacing: .eight) {
                     Image(systemName: GenericIcon.retry)

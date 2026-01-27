@@ -73,7 +73,7 @@ public struct ArtworkListView<Store: ArtworkListViewStoreProtocol>: View {
                 }
             }
             .padding()
-            .background(Color.red.opacity(0.3))
+            .background(Color.lightRed)
             .clipShape(RoundedRectangle(cornerRadius: .eight))
             .accessibilityIdentifier(ArtworkListViewIds.retryButton)
         }

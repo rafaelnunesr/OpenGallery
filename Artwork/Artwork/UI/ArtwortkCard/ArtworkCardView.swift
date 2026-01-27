@@ -57,7 +57,7 @@ public struct ArtworkCardView: View {
     }
     
     public var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
+        VStack(alignment: .leading, spacing: .zero) {
             imageView
             titleLabel
             artistLabel
@@ -70,9 +70,9 @@ public struct ArtworkCardView: View {
     private var imageView: some View {
         ImageView(url: model.imageURL)
             .aspectRatio(contentMode: .fit)
-            .frame(height: 400)
-            .background(Color.gray.opacity(0.2))
-            .clipShape(RoundedRectangle(cornerRadius: 8))
+            .frame(height: .fourHundred)
+            .background(Color.lightGray)
+            .clipShape(RoundedRectangle(cornerRadius: .eight))
     }
     
     private var titleLabel: some View {
@@ -80,7 +80,7 @@ public struct ArtworkCardView: View {
             .font(.title2)
             .bold()
             .multilineTextAlignment(.leading)
-            .padding(.top, 16)
+            .padding(.top, .sixteen)
     }
     
     @ViewBuilder
@@ -105,7 +105,7 @@ public struct ArtworkCardView: View {
         Text(model.detailsView)
         .font(.footnote)
         .foregroundStyle(.secondary)
-        .padding(.bottom, 4)
+        .padding(.bottom, .four)
     }
 }
 

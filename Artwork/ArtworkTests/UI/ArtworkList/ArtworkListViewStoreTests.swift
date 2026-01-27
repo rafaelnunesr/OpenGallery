@@ -32,7 +32,7 @@ struct ArtworkListViewStoreTests {
         
         loader.completeWithError()
         
-        #expect(sut.errorMessage == "GENERIC ERROR MESSAGE")
+        #expect(sut.errorMessage == GenericKey.errorMessage.localized)
         #expect(!sut.isLoading)
     }
     

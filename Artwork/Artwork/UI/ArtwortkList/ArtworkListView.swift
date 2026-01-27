@@ -15,18 +15,18 @@ public struct ArtworkListView<Store: ArtworkListViewStoreProtocol>: View {
     }
     
     public var body: some View {
-        VStack(alignment: .center, spacing: 8) {
+        VStack(alignment: .center, spacing: .eight) {
             errorView
             contentView
             loadingView
             retryButton
         }
-        .navigationTitle("Artworks")
+        .navigationTitle(ArtworkListKey.title.localized)
     }
     
     private var contentView: some View {
         ScrollView {
-            LazyVStack(spacing: 16) {
+            LazyVStack(spacing: .sixteen) {
                 ForEach(store.value) { model in
                     ArtworkCardView(model: model)
                 }
@@ -45,7 +45,7 @@ public struct ArtworkListView<Store: ArtworkListViewStoreProtocol>: View {
     private var errorView: some View {
         if let message = store.errorMessage {
             Rectangle()
-                .frame(height: 52)
+                .frame(height: .fiftyTwo)
                 .foregroundStyle(.red)
                 .overlay {
                     Text(message)
@@ -62,19 +62,19 @@ public struct ArtworkListView<Store: ArtworkListViewStoreProtocol>: View {
             Button {
                 store.reload()
             } label: {
-                VStack(alignment: .center, spacing: 8) {
-                    Image(systemName: "arrow.trianglehead.clockwise")
+                VStack(alignment: .center, spacing: .eight) {
+                    Image(systemName: GenericIcon.retry)
                         .font(.title)
                         .foregroundStyle(Color.white)
                     
-                    Text("Retry")
+                    Text(GenericKey.retry.localized)
                         .font(.title)
                         .foregroundStyle(Color.white)
                 }
             }
             .padding()
-            .background(Color.red.opacity(0.3))
-            .clipShape(RoundedRectangle(cornerRadius: 8))
+            .background(Color.lightRed)
+            .clipShape(RoundedRectangle(cornerRadius: .eight))
             .accessibilityIdentifier(ArtworkListViewIds.retryButton)
         }
     }
@@ -82,6 +82,10 @@ public struct ArtworkListView<Store: ArtworkListViewStoreProtocol>: View {
 
 public enum ArtworkListViewIds {
     public static let retryButton = "retry_button"
+}
+
+public enum ArtworkListKey: String, LocalizationKey, CaseIterable {
+    case title
 }
 
 #Preview {

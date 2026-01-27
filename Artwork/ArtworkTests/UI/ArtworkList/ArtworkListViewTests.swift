@@ -51,7 +51,7 @@ final class ArtworkListViewTests: XCTestCase {
         let store = ArtworkListViewStoreStub(
             value: [ArtworkCardViewModel.model1, ArtworkCardViewModel.model2],
             isLoading: isLoading,
-            errorMessage: hasError ? "GENERIC ERROR MESSAGE" : nil
+            errorMessage: hasError ? GenericKey.errorMessage.localized : nil
         )
         
         let sut = ArtworkListView(store: store)

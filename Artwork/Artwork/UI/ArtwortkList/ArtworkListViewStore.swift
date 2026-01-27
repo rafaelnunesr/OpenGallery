@@ -34,7 +34,7 @@ public class ArtworkListViewStore: ArtworkListViewStoreProtocol {
         loader.load { [weak self] result in
             switch result {
             case .failure:
-                self?.errorMessage = "GENERIC ERROR MESSAGE"
+                self?.errorMessage = GenericKey.errorMessage.localized
             case let .success(models):
                 self?.value = models.map { ArtworkCardViewModel.map(from: $0) }
             }

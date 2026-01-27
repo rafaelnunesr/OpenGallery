@@ -11,7 +11,7 @@ import Foundation
 import XCTest
 
 class ArtworkListLocalizationTests: XCTestCase {
-
+    
     func test_localizedStrings_haveKeysAndValuesForAllSupportedLocalizations() {
         let testFileURL = URL(fileURLWithPath: #filePath)
         guard let projectRoot = testFileURL.backTo(folderName: "Artwork") else {
@@ -24,6 +24,6 @@ class ArtworkListLocalizationTests: XCTestCase {
             .appendingPathComponent("Shared Presentation")
             .appendingPathComponent("Localizable.xcstrings")
         
-        assertLocalizedKeysExist(ErrorKey.allCases.map(\.rawValue), at: catalogURL)
+        assertLocalizedKeysExist(ArtworkListKey.allCases.map(\.rawValue), at: catalogURL)
     }
 }

@@ -63,7 +63,7 @@ public struct ArtworkListView<Store: ArtworkListViewStoreProtocol>: View {
                 store.reload()
             } label: {
                 VStack(alignment: .center, spacing: 8) {
-                    Image(systemName: "arrow.trianglehead.clockwise")
+                    Image(systemName: GenericIcon.retry)
                         .font(.title)
                         .foregroundStyle(Color.white)
                     

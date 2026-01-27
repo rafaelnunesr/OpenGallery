@@ -8,42 +8,87 @@
 import XCTest
 
 func assertLocalizedKeysExist(
-    _ keyProviders: [() -> [String]],
-    in bundle: Bundle,
-    table: String? = nil,
+    _ keys: [String],
+    at url: URL,
     file: StaticString = #filePath,
     line: UInt = #line
 ) {
-    let localizations = bundle.localizations
+    guard let data = try? Data(contentsOf: url),
+          let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+          let sourceLanguage = json["sourceLanguage"] as? String,
+          let strings = json["strings"] as? [String: Any] else {
+        XCTFail("❌ Could not parse String Catalog", file: file, line: line)
+        return
+    }
 
-    localizations.forEach { localization in
-        guard
-            let path = bundle.path(forResource: localization, ofType: "lproj"),
-            let localizedBundle = Bundle(path: path)
-        else {
-            XCTFail("Couldn't find bundle for localization: \(localization)", file: file, line: line)
-            return
+    for key in keys {
+        guard let entry = strings[key] as? [String: Any] else {
+            XCTFail("❌ Key '\(key)' is completely missing from the Catalog file.", file: file, line: line)
+            continue
         }
 
-        keyProviders.forEach { provideKeys in
-            provideKeys().forEach { key in
-                let localizedString = localizedBundle.localizedString(
-                    forKey: key,
-                    value: nil,
-                    table: table
-                )
+        let localizations = entry["localizations"] as? [String: Any] ?? [:]
+        
+        let sourceResult = extractValueAndState(from: localizations[sourceLanguage] as? [String: Any])
+        let sourceValue = sourceResult.value
+        
+        for language in SupportedLanguages.allCases {
+            let isSourceLanguage = (language.rawValue == sourceLanguage)
+            let localization = localizations[language.rawValue] as? [String: Any]
+            let result = extractValueAndState(from: localization)
 
-                if localizedString == key {
-                    let language = Locale.current.localizedString(forLanguageCode: localization) ?? localization
+            if localization == nil {
+                XCTFail("❌ Key '\(key)' is missing translation for '\(language.rawValue)'. (Language is 0% complete)", file: file, line: line)
+                continue
+            }
 
-                    XCTFail(
-                        "Missing \(language) (\(localization)) localized string for key '\(key)'"
-                        + (table != nil ? " in table '\(table!)'" : ""),
-                        file: file,
-                        line: line
-                    )
-                }
+            if !isSourceLanguage && (result.state == "untranslated" || result.state == "needs_review") {
+                XCTFail("❌ Key '\(key)' in (\(language.rawValue)) is marked as '\(result.state ?? "stale")' in Xcode.", file: file, line: line)
+                continue
+            }
+
+            let exceptions = ["Artworks", "Retry"]
+            if !isSourceLanguage && !exceptions.contains(key) && result.value == sourceValue {
+                XCTFail("""
+                ❌ Placeholder found for '\(key)' in (\(language.rawValue))! 
+                Current Value: "\(result.value)" matches English.
+                """, file: file, line: line)
             }
         }
     }
+}
+
+// MARK: - Helpers
+
+private func extractValueAndState(from localization: [String: Any]?) -> (value: String, state: String?) {
+    guard let localization = localization else { return ("", nil) }
+    
+    if let variations = localization["variations"] as? [String: Any],
+       let idioms = variations["idiom"] as? [String: Any],
+       let firstIdiom = idioms.values.first as? [String: Any],
+       let stringUnit = firstIdiom["stringUnit"] as? [String: Any] {
+        return (stringUnit["value"] as? String ?? "", stringUnit["state"] as? String)
+    }
+    
+    if let stringUnit = localization["stringUnit"] as? [String: Any] {
+        return (stringUnit["value"] as? String ?? "", stringUnit["state"] as? String)
+    }
+    
+    return ("", nil)
+}
+
+extension URL {
+    func backTo(folderName: String) -> URL? {
+        var current = self
+        while current.path != "/" {
+            if current.lastPathComponent == folderName { return current }
+            current = current.deletingLastPathComponent()
+        }
+        return nil
+    }
+}
+
+private enum SupportedLanguages: String, CaseIterable {
+    case english = "en"
+    case brazilianPortuguese = "pt-BR"
 }

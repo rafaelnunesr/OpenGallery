@@ -9,7 +9,7 @@ import Foundation
 
 public protocol LocalizationKey: RawRepresentable where RawValue == String {}
 
-public enum ErrorKey: String, LocalizationKey {
+public enum ErrorKey: String, LocalizationKey, CaseIterable {
     case genericError
 }
 

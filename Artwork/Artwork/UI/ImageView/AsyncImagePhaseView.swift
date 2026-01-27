@@ -36,8 +36,8 @@ public struct AsyncImagePhaseView: View {
             ZStack {
                 Color.red.opacity(0.3)
                 
-                VStack(alignment: .center, spacing: 8) {
-                    Image(systemName: "arrow.trianglehead.clockwise")
+                VStack(alignment: .center, spacing: .eight) {
+                    Image(systemName: GenericIcon.retry)
                         .font(.title)
                         .foregroundStyle(Color.white)
                     

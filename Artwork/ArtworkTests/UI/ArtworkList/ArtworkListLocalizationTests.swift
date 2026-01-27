@@ -23,6 +23,6 @@ final class ArtworkListLocalizationTests: XCTestCase {
             .appendingPathComponent("Shared Presentation")
             .appendingPathComponent("Localizable.xcstrings")
         
-        assertLocalizedKeysExist(ArtworkListKey.allCases.map(\.rawValue), at: catalogURL)
+        assertLocalizedKeysExist(ArtworkListKey.allCases.map(\.key), at: catalogURL)
     }
 }

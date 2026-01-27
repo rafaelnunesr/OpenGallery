@@ -21,7 +21,7 @@ public struct ArtworkListView<Store: ArtworkListViewStoreProtocol>: View {
             loadingView
             retryButton
         }
-        .navigationTitle(ArtworkListKey.artworkListTitle.localized)
+        .navigationTitle(ArtworkListKey.title.localized)
     }
     
     private var contentView: some View {
@@ -85,7 +85,7 @@ public enum ArtworkListViewIds {
 }
 
 public enum ArtworkListKey: String, LocalizationKey, CaseIterable {
-    case artworkListTitle
+    case title
 }
 
 #Preview {

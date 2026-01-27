@@ -23,7 +23,11 @@ public extension LocalizationKey {
 }
 
 public extension LocalizationKey {
+    var key: String {
+        return "\(String(describing: Self.self)).\(rawValue)"
+    }
+    
     var localized: String {
-        self.string()
+        return NSLocalizedString(key, comment: "")
     }
 }

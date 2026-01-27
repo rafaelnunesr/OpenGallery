@@ -1,7 +1,7 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "artworkListTitle" : {
+    "ArtworkListKey.title" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
@@ -18,7 +18,7 @@
         }
       }
     },
-    "genericErrorMessage" : {
+    "GenericKey.errorMessage" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {

@@ -9,10 +9,6 @@ import Foundation
 
 public protocol LocalizationKey: RawRepresentable where RawValue == String {}
 
-public enum ErrorKey: String, LocalizationKey, CaseIterable {
-    case genericError
-}
-
 public extension LocalizationKey {
     func string(
         bundle: Bundle = .main,
@@ -23,5 +19,11 @@ public extension LocalizationKey {
             value: nil,
             table: table
         )
+    }
+}
+
+public extension LocalizationKey {
+    var localized: String {
+        self.string()
     }
 }

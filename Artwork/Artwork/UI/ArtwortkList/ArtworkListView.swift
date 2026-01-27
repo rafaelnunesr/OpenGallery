@@ -86,10 +86,6 @@ public enum ArtworkListViewIds {
 
 public enum ArtworkListKey: String, LocalizationKey, CaseIterable {
     case artworkListTitle
-    
-    var localized: String {
-        self.string()
-    }
 }
 
 #Preview {

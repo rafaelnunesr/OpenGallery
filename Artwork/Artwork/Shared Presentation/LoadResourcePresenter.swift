@@ -42,6 +42,6 @@ public class LoadResourcePresenter<Resource, View: ResourceViewState> {
     
     public func didFinishLoading(with error: Error) {
         loadingViewState.isLoading = false
-        errorViewState.errorMessage = ErrorKey.genericError.string()
+        errorViewState.errorMessage = GenericErrorKey.genericErrorMessage.localized
     }
 }

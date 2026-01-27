@@ -22,6 +22,6 @@ final class LoadResourcePresenterLocalizationTests: XCTestCase {
             .appendingPathComponent("Shared Presentation")
             .appendingPathComponent("Localizable.xcstrings")
         
-        assertLocalizedKeysExist(ErrorKey.allCases.map(\.rawValue), at: catalogURL)
+        assertLocalizedKeysExist(GenericErrorKey.allCases.map(\.rawValue), at: catalogURL)
     }
 }

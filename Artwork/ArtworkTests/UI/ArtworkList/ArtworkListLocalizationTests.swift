@@ -8,9 +8,8 @@
 import XCTest
 import Artwork
 import Foundation
-import XCTest
 
-class ArtworkListLocalizationTests: XCTestCase {
+final class ArtworkListLocalizationTests: XCTestCase {
     
     func test_localizedStrings_haveKeysAndValuesForAllSupportedLocalizations() {
         let testFileURL = URL(fileURLWithPath: #filePath)

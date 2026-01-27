@@ -67,7 +67,7 @@ public struct ArtworkListView<Store: ArtworkListViewStoreProtocol>: View {
                         .font(.title)
                         .foregroundStyle(Color.white)
                     
-                    Text("Retry")
+                    Text(GenericKey.retry.localized)
                         .font(.title)
                         .foregroundStyle(Color.white)
                 }

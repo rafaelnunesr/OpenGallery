@@ -7,4 +7,5 @@
 
 public enum GenericKey: String, LocalizationKey, CaseIterable {
     case errorMessage
+    case retry
 }

@@ -63,6 +63,16 @@ struct CoordinatorTests {
         #expect(sut.path.map { $0 } == ["A value"])
     }
     
+    @Test
+    func pushDoesNotAddDuplicateElements() {
+        let sut = makeSUT()
+        
+        sut.push("A value")
+        sut.push("A value")
+        
+        #expect(sut.path.map { $0 } == ["A value"])
+    }
+    
     // MARK: Helpers
     
     private func makeSUT() -> Coordinator<String> {

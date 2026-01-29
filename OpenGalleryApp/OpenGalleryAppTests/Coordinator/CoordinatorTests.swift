@@ -15,7 +15,10 @@ class Coordinator {
     
     init() {}
     
-    func pop() {}
+    func pop() {
+        guard !path.isEmpty else { return }
+        path.removeLast()
+    }
 }
 
 struct CoordinatorTests {
@@ -29,6 +32,17 @@ struct CoordinatorTests {
     @Test
     func whenPathIsEmpty_popKeepsPathEmpty() {
         let sut = Coordinator()
+        
+        sut.pop()
+        
+        #expect(sut.path.isEmpty)
+    }
+    
+    @Test
+    func popRemovesLastElementFromPath() {
+        let sut = Coordinator()
+        
+        sut.path.append("A value")
         
         sut.pop()
         

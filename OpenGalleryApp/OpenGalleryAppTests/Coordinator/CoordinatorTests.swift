@@ -19,6 +19,10 @@ class Coordinator {
         guard !path.isEmpty else { return }
         path.removeLast()
     }
+    
+    func push(_ view: any Hashable) {
+        path.append(view)
+    }
 }
 
 struct CoordinatorTests {
@@ -47,5 +51,14 @@ struct CoordinatorTests {
         sut.pop()
         
         #expect(sut.path.isEmpty)
+    }
+    
+    @Test
+    func pushAddsElementToPath() {
+        let sut = Coordinator()
+        
+        sut.push("A value")
+        
+        #expect(sut.path.map { $0 as! String } == ["A value"])
     }
 }

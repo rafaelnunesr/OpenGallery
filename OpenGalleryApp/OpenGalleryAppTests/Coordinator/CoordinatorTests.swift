@@ -14,12 +14,23 @@ class Coordinator {
     @Published var path = NavigationPath()
     
     init() {}
+    
+    func pop() {}
 }
 
 struct CoordinatorTests {
     @Test
     func whenInitialized_pathIsEmpty() {
         let sut = Coordinator()
+        
+        #expect(sut.path.isEmpty)
+    }
+    
+    @Test
+    func whenPathIsEmpty_popKeepsPathEmpty() {
+        let sut = Coordinator()
+        
+        sut.pop()
         
         #expect(sut.path.isEmpty)
     }

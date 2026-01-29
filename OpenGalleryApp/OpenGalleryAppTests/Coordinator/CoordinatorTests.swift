@@ -24,6 +24,10 @@ class Coordinator<T: Hashable> {
         guard !path.contains(element) else { return }
         path.append(element)
     }
+    
+    func popToRootMain() {
+        path = []
+    }
 }
 
 struct CoordinatorTests {
@@ -71,6 +75,18 @@ struct CoordinatorTests {
         sut.push("A value")
         
         #expect(sut.path.map { $0 } == ["A value"])
+    }
+    
+    @Test
+    func popToRoot_clearsPath() {
+        let sut = makeSUT()
+        
+        sut.path.append("A value")
+        sut.path.append("Another value")
+        
+        sut.popToRootMain()
+        
+        #expect(sut.path.isEmpty)
     }
     
     // MARK: Helpers

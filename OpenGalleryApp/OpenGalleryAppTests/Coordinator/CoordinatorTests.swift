@@ -11,7 +11,7 @@ import SwiftUI
 import Combine
 
 class Coordinator {
-    @Published var path = NavigationPath()
+    @Published var path: [any Hashable] = []
     
     init() {}
     

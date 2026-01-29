@@ -6,29 +6,7 @@
 //
 
 import Testing
-
-import SwiftUI
-import Combine
-
-class Coordinator<T: Hashable> {
-    @Published var path: [T] = []
-    
-    init() {}
-    
-    func pop() {
-        guard !path.isEmpty else { return }
-        path.removeLast()
-    }
-    
-    func push(_ element: T) {
-        guard !path.contains(element) else { return }
-        path.append(element)
-    }
-    
-    func popToRootMain() {
-        path = []
-    }
-}
+@testable import OpenGalleryApp
 
 struct CoordinatorTests {
     @Test
@@ -84,7 +62,7 @@ struct CoordinatorTests {
         sut.path.append("A value")
         sut.path.append("Another value")
         
-        sut.popToRootMain()
+        sut.popToRoot()
         
         #expect(sut.path.isEmpty)
     }

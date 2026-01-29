@@ -10,8 +10,8 @@ import Testing
 import SwiftUI
 import Combine
 
-class Coordinator {
-    @Published var path: [any Hashable] = []
+class Coordinator<T: Hashable> {
+    @Published var path: [T] = []
     
     init() {}
     
@@ -20,7 +20,8 @@ class Coordinator {
         path.removeLast()
     }
     
-    func push(_ view: any Hashable) {
+    func push(_ view: T) {
+        guard !path.contains(view) else { return }
         path.append(view)
     }
 }
@@ -28,14 +29,14 @@ class Coordinator {
 struct CoordinatorTests {
     @Test
     func whenInitialized_pathIsEmpty() {
-        let sut = Coordinator()
+        let sut = makeSUT()
         
         #expect(sut.path.isEmpty)
     }
     
     @Test
     func whenPathIsEmpty_popKeepsPathEmpty() {
-        let sut = Coordinator()
+        let sut = makeSUT()
         
         sut.pop()
         
@@ -44,7 +45,7 @@ struct CoordinatorTests {
     
     @Test
     func popRemovesLastElementFromPath() {
-        let sut = Coordinator()
+        let sut = makeSUT()
         
         sut.path.append("A value")
         
@@ -55,10 +56,16 @@ struct CoordinatorTests {
     
     @Test
     func pushAddsElementToPath() {
-        let sut = Coordinator()
+        let sut = makeSUT()
         
         sut.push("A value")
         
-        #expect(sut.path.map { $0 as! String } == ["A value"])
+        #expect(sut.path.map { $0 } == ["A value"])
+    }
+    
+    // MARK: Helpers
+    
+    private func makeSUT() -> Coordinator<String> {
+        return Coordinator()
     }
 }

@@ -20,9 +20,9 @@ class Coordinator<T: Hashable> {
         path.removeLast()
     }
     
-    func push(_ view: T) {
-        guard !path.contains(view) else { return }
-        path.append(view)
+    func push(_ element: T) {
+        guard !path.contains(element) else { return }
+        path.append(element)
     }
 }
 
